@@ -1,8 +1,9 @@
-package com.aerotrax.flows
+package com.aerotrax.flows.Product
 
 import co.paralleluniverse.fibers.Suspendable
 import com.aerotrax.contracts.ProductContract
 import com.aerotrax.functions.FlowFunctions
+import com.aerotrax.states.CMMState
 import com.aerotrax.states.CompanyState
 import com.aerotrax.states.ProductState
 import javassist.NotFoundException
@@ -15,18 +16,11 @@ import net.corda.core.transactions.TransactionBuilder
 import java.time.Instant
 
 @StartableByRPC
-class RegisterProductFlow (
-        private val companyId: String,
-        private val name: String,
-        private val partNumber: String,
+class RegisterCMMFlow (
+        private val productId: String,
         private val serialNumber: String,
-        private val manufacturer: String,
-        private val partType: String,
-        private val status: String,
-        private val type: String,
-        private val category: String,
-        private val createdBy: String,
-        private val transactionId: String
+        private val CMMTitle: String,
+        private val createdBy: String
 ): FlowFunctions() {
 
     @Suspendable
@@ -36,35 +30,17 @@ class RegisterProductFlow (
         return recordTransactionWithoutCounterParty(signedTransaction)
     }
 
-    private fun output(): ProductState {
 
-        val companyState = serviceHub.vaultService.queryBy<CompanyState>().states.find {
-            it.state.data.linearId == stringToLinearID(companyId)
-        }?: throw NotFoundException("Company Id not found")
+    private fun outputCMMState(): CMMState {
 
-        val companyName = companyState.state.data.name
-
-        return ProductState(
-                companyId = companyId,
-                name = name,
-                partNumber = partNumber,
+        return CMMState(
                 serialNumber = serialNumber,
-                manufacturer = manufacturer,
-                registeredOwner = companyName,
-                newOwner = null,
-                partType = partType,
-                status = status,
-                saleStatus = null,
-                type = type,
-                category = category,
-                views = null,
-                rate = null,
-                dealBit = null,
+                productId = productId,
+                title = CMMTitle,
+                status = "completed",
                 createdBy = createdBy,
-                updatedBy = null,
                 createdAt = Instant.now(),
                 updatedAt = null,
-                transactionId = transactionId,
                 linearId = UniqueIdentifier(),
                 participants = listOf(ourIdentity)
         )
@@ -73,7 +49,7 @@ class RegisterProductFlow (
     private fun transaction(): TransactionBuilder {
         val builder = TransactionBuilder(notary())
         val productCmd = Command(ProductContract.Commands.Create(), ourIdentity.owningKey)
-        builder.addOutputState(output(), ProductContract.ID)
+        builder.addOutputState(outputCMMState(), ProductContract.ID)
         builder.addCommand(productCmd)
         return builder
     }

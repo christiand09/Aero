@@ -48,4 +48,8 @@ abstract class FlowFunctions : FlowLogic<SignedTransaction>() {
         return UniqueIdentifier.fromString(id)
     }
 
+    /**
+     * Add Part Detail
+     */
+
 }

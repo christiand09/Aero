@@ -9,7 +9,7 @@ import java.time.Instant
 
 @BelongsToContract(CMMContract::class)
 data class CMMState(val serialNumber: String,
-                    val productId: String,
+                    val productId: String?,
                     val title: String,
                     val status: String,
                     val createdBy: String,
