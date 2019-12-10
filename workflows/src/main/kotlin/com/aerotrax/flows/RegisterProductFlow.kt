@@ -3,8 +3,8 @@ package com.aerotrax.flows
 import co.paralleluniverse.fibers.Suspendable
 import com.aerotrax.contracts.ProductContract
 import com.aerotrax.functions.FlowFunctions
+import com.aerotrax.states.CompanyState
 import com.aerotrax.states.ProductState
-import com.ipn.platforms.dezrez.states.CompanyState
 import javassist.NotFoundException
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier

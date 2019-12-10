@@ -1,4 +1,4 @@
-package constants
+package com.aerotrax.constants
 
 class NodeConstants{
 
