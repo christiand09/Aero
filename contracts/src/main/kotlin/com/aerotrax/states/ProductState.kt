@@ -1,4 +1,4 @@
-package com.ipn.platforms.dezrez.states
+package com.aerotrax.states
 
 import com.aerotrax.contracts.ARCContract
 import net.corda.core.contracts.BelongsToContract
