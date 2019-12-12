@@ -5,7 +5,6 @@ import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.Party
-import java.time.Instant
 
 @BelongsToContract(ParticipantContract::class)
 data class ParticipantState(val name: String,
@@ -26,8 +25,5 @@ data class ParticipantState(val name: String,
                             val country: String?,
                             val zipCode: String?,
                             val review: String?,
-                            val createdBy: String,
-                            val createdAt: Instant,
-                            val updatedAt: Instant?,
                             override val linearId: UniqueIdentifier,
                             override val participants: List<Party>): LinearState

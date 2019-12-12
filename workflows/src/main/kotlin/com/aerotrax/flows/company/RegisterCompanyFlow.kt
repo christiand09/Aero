@@ -36,9 +36,31 @@ class RegisterCompanyFlow (
 
     @Suspendable
     override fun call(): SignedTransaction {
-        val transaction = transaction()
-        val signedTransaction = verifyAndSign(transaction)
-        return recordTransactionWithoutCounterParty(signedTransaction)
+        val output = outputCompanyState()
+        val signedTransaction = verifyAndSign(transaction())
+        return recordTransactionWithoutCounterParty(signedTransaction).also {
+            AddNewParticipantFlow(
+                    name = output.name,
+                    email = output.email,
+                    type = output.type,
+                    node = output.node,
+                    logoImage = output.logoImage,
+                    contactNumber = output.contactNumber,
+                    rate = output.rate,
+                    website = output.website,
+                    linkedIn = output.linkedIn,
+                    about = output.about,
+                    location = output.location,
+                    addressLine1 = output.addressLine1,
+                    addressLine2 = output.addressLine2,
+                    city = output.city,
+                    state = output.state,
+                    country = output.country,
+                    zipCode = output.zipCode,
+                    review = output.review,
+                    linearId = output.linearId.toString()
+            )
+        }
     }
 
     private fun outputCompanyState(): CompanyState {
