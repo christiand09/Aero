@@ -4,17 +4,17 @@ import com.aerotrax.contracts.CompanyContract
 import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.identity.AbstractParty
+import net.corda.core.identity.Party
 import java.time.Instant
 
 @BelongsToContract(CompanyContract::class)
 data class CompanyState(val name: String,
                         val email: String,
                         val password: String,
-                        val passwordHash: String,
-                        val passwordSalt: String,
+//                        val passwordHash: String,
+//                        val passwordSalt: String,
                         val type: String,
-                        val node: String,
+                        val node: Party,
                         val logoImage: String?,
                         val contactNumber: String?,
                         val rate: String?,
@@ -31,6 +31,8 @@ data class CompanyState(val name: String,
                         val review: String?,
                         val createdBy: String,
                         val createdAt: Instant,
-                        val UpdatedAt: Instant?,
+                        val updatedAt: Instant?,
+                        val connections: MutableList<String>?,
+                        val requests: MutableList<String>?,
                         override val linearId: UniqueIdentifier,
-                        override val participants: List<AbstractParty>): LinearState
+                        override val participants: List<Party>): LinearState

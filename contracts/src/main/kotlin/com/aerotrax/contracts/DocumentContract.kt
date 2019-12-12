@@ -8,7 +8,7 @@ import net.corda.core.transactions.LedgerTransaction
 class DocumentContract : Contract {
     companion object {
 
-        const val ID = "com.template.contracts.DocumentContract"
+        const val ID = "com.aerotrax.contracts.DocumentContract"
     }
 
     override fun verify(tx: LedgerTransaction) {

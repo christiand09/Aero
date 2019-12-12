@@ -1,9 +1,8 @@
-package com.aerotrax.flows.Product
+package com.aerotrax.flows.product
 
 import co.paralleluniverse.fibers.Suspendable
 import com.aerotrax.contracts.ProductContract
 import com.aerotrax.functions.FlowFunctions
-import com.aerotrax.states.CMMState
 import com.aerotrax.states.CompanyState
 import com.aerotrax.states.ProductState
 import javassist.NotFoundException
@@ -71,20 +70,7 @@ class RegisterProductFlow (
         )
     }
 
-    private fun outputCMMState(): CMMState {
 
-        return CMMState(
-                serialNumber = serialNumber,
-                productId = outputProductState().linearId.toString(),
-                title = CMMTitle,
-                status = "Completed",
-                createdBy = createdBy,
-                createdAt = Instant.now(),
-                updatedAt = null,
-                linearId = UniqueIdentifier(),
-                participants = listOf(ourIdentity)
-        )
-    }
 
     private fun transaction(): TransactionBuilder {
         val builder = TransactionBuilder(notary())

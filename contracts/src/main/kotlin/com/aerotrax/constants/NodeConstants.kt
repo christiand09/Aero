@@ -4,7 +4,7 @@ class NodeConstants{
 
     companion object{
 
-         const val AEROTRAX_NODE = "O=Aerotrax,L=New York,C=US"
+         const val AEROTRAX_NODE = "O=Aerotrax,L=London,C=GB"
 
          const val MRO_NODE = "O=MRO,L=New York,C=US"
 

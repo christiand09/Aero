@@ -1,3 +1,6 @@
 include 'workflows'
 include 'contracts'
-include 'clients'
+include 'clients-aerotrax'
+include 'clients-airline'
+include 'clients-mro'
+include 'clients-oem'
