@@ -9,16 +9,15 @@ import net.corda.core.identity.Party
 import java.time.Instant
 
 @BelongsToContract(BuyerContract::class)
-data class BuyerState(val companyId: String,
+data class BuyerState(val buyerDetailsId: String,
+                      val companyId: String,
                       val serialNumber: String,
                       val productId: String,
                       val groupNumber: String,
-                      val node: Party,
+                      val node: String,
                       val status: String?,
-                      val buyerDetailsId: List<String>?,
                       val createdBy: String,
                       val createdAt: Instant,
                       val updatedAt: Instant?,
-                      val transactionId: String,
                       override val linearId: UniqueIdentifier,
                       override val participants: List<Party>): LinearState

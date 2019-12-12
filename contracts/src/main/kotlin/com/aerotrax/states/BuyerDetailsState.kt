@@ -9,8 +9,7 @@ import net.corda.core.identity.Party
 import java.time.Instant
 
 @BelongsToContract(BuyerDetailsContract::class)
-data class BuyerDetailsState(val buyerId: String,
-                             val serialNumber: String,
+data class BuyerDetailsState(val serialNumber: String,
                              val productId: String,
                              val indicatePrice: String,
                              val currencyPrice: String,
@@ -20,6 +19,5 @@ data class BuyerDetailsState(val buyerId: String,
                              val createdBy: String,
                              val createdAt: Instant,
                              val updatedAt: Instant?,
-                             val transactionId: String,
                              override val linearId: UniqueIdentifier,
                              override val participants: List<Party>): LinearState
