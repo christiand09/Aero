@@ -2,8 +2,6 @@ package com.aerotrax.dto
 
 import com.aerotrax.states.CompanyState
 import com.aerotrax.states.ConnectionState
-import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
 import java.time.Instant
 
@@ -43,12 +41,14 @@ data class ApproveRejectConnectionDTO(
 data class MainConnectionDTO(
         val companyId: String,
         val requestCompanyId: String,
+        val requestNode: String,
         val acceptedAt: Instant?,
+        val declinedAt: Instant?,
+        val reason: String?,
         val status: String,
         val createdBy: String,
         val createdAt: Instant,
         val updatedAt: Instant?,
-        val transactionId: String?,
         val linearId: String,
         val participants: List<Party>
 )
@@ -58,12 +58,14 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
     return MainConnectionDTO(
             companyId = state.companyId,
             requestCompanyId = state.requestCompanyId,
+            requestNode = state.requestNode,
             acceptedAt = state.acceptedAt,
+            declinedAt = state.declinedAt,
+            reason = state.reason,
             status = state.status,
             createdBy = state.createdBy,
             createdAt = state.createdAt,
             updatedAt = state.updatedAt,
-            transactionId = state.transactionId,
             linearId = state.linearId.toString(),
             participants = state.participants
         )
@@ -93,8 +95,6 @@ data class MainCompanyDTO(
         val createdBy: String,
         val createdAt: Instant,
         val updatedAt: Instant?,
-        val connections: List<String>?,
-        val requests: List<String>?,
         val linearId: String,
         val participants: List<String>)
 
@@ -122,8 +122,6 @@ fun mapToMainCompanyDTO(state: CompanyState) : MainCompanyDTO {
             createdBy = state.createdBy,
             createdAt =  state.createdAt,
             updatedAt = state.updatedAt,
-            connections = state.connections?.map { it},
-            requests = state.requests?.map { it },
             linearId = state.linearId.toString(),
             participants = state.participants?.map { it.toString() }
     )

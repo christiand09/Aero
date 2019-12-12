@@ -29,35 +29,35 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
         return mapToMainCompanyDTO(company)
     }
 
-    override fun getAllRequestingConnections(id:String): List<MainCompanyDTO>
-    {
-        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states
-        val company = companyState.find { it.state.data.linearId.toString() == id }?.state?.data ?: throw NotFoundException("Company Not Found")
+//    override fun getAllRequestingConnections(id:String): List<MainCompanyDTO>
+//    {
+//        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states
+//        val company = companyState.find { it.state.data.linearId.toString() == id }?.state?.data ?: throw NotFoundException("Company Not Found")
+//
+//        val requests = company.requests
+//        val myRequests = mutableListOf<CompanyState>()
+//
+//        requests?.map { company ->
+//            val otherCompany = companyState.find { it.state.data.linearId.toString() == company }
+//            myRequests.add(otherCompany!!.state.data)
+//        }
+//        return myRequests.map { mapToMainCompanyDTO(it) }
+//    }
 
-        val requests = company.requests
-        val myRequests = mutableListOf<CompanyState>()
-
-        requests?.map { company ->
-            val otherCompany = companyState.find { it.state.data.linearId.toString() == company }
-            myRequests.add(otherCompany!!.state.data)
-        }
-        return myRequests.map { mapToMainCompanyDTO(it) }
-    }
-
-    override fun getAllConnections(id:String): List<MainCompanyDTO>
-    {
-        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states
-        val company = companyState.find { it.state.data.linearId.toString() == id }?.state?.data ?: throw NotFoundException("Company Not Found")
-
-        val connections = company.connections
-        val myConnections = mutableListOf<CompanyState>()
-
-        connections?.map { company ->
-        val otherCompany = companyState.find { it.state.data.linearId.toString() == company }
-        myConnections.add(otherCompany!!.state.data)
-        }
-        return myConnections.map { mapToMainCompanyDTO(it) }
-    }
+//    override fun getAllConnections(id:String): List<MainCompanyDTO>
+//    {
+//        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states
+//        val company = companyState.find { it.state.data.linearId.toString() == id }?.state?.data ?: throw NotFoundException("Company Not Found")
+//
+//        val connections = company.connections
+//        val myConnections = mutableListOf<CompanyState>()
+//
+//        connections?.map { company ->
+//        val otherCompany = companyState.find { it.state.data.linearId.toString() == company }
+//        myConnections.add(otherCompany!!.state.data)
+//        }
+//        return myConnections.map { mapToMainCompanyDTO(it) }
+//    }
 
     override fun createCompany(request: RegisterCompanyDTO): MainCompanyDTO
     {
@@ -113,6 +113,16 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
         fhc.flowHandlerCompletion(flowReturn)
         val flowResult = flowReturn.returnValue.get().coreTransaction.outputStates.first() as ConnectionState
         return mapToMainConnectionDTO(flowResult)
+    }
+
+    override fun searchAllConnections(searchText: String?): List<MainCompanyDTO>
+    {
+        //todo change CompanyState to ParticipantState
+        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states.map { it }
+        if(searchText == null || searchText.isEmpty())
+            return companyState.map { mapToMainCompanyDTO(it.state.data) }
+        val normalizedSearchText = searchText.toLowerCase().trim()
+            return companyState.map { mapToMainCompanyDTO(it.state.data) }.filter { it.name.contains(searchText)}
     }
 
 }

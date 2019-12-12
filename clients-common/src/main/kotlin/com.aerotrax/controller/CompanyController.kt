@@ -59,47 +59,47 @@ class CompanyController(private val companyService: CompanyService, private val 
         }
     }
 
-    /**
-     * Get all requesting companies
-     */
+//    /**
+//     * Get all requesting companies
+//     */
+//
+//    @GetMapping(value = ["/requests"], produces = ["application/json"])
+//    private fun getAllRequestingConnections(@RequestHeader id: String): ResponseEntity<ResponseDTO>
+//    {
+//        return try
+//        {
+//            val response = companyService.getAllRequestingConnections(id)
+//            ResponseEntity.ok(ResponseDTO(
+//                    message = "Success",
+//                    result = response
+//            ))
+//        } catch (e: Exception) {
+//            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
+//            val function = "companyService.getAllRequestingConnections()"
+//            return this.handleException(e, identity, function)
+//        }
+//    }
 
-    @GetMapping(value = ["/requests"], produces = ["application/json"])
-    private fun getAllRequestingConnections(@RequestHeader id: String): ResponseEntity<ResponseDTO>
-    {
-        return try
-        {
-            val response = companyService.getAllRequestingConnections(id)
-            ResponseEntity.ok(ResponseDTO(
-                    message = "Success",
-                    result = response
-            ))
-        } catch (e: Exception) {
-            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
-            val function = "companyService.getAllRequestingConnections()"
-            return this.handleException(e, identity, function)
-        }
-    }
-
-    /**
-     * Get all connections
-     */
-
-    @GetMapping(value = ["/connections"], produces = ["application/json"])
-    private fun getAllConnections(@RequestHeader id: String): ResponseEntity<ResponseDTO>
-    {
-        return try
-        {
-            val response = companyService.getAllConnections(id)
-            ResponseEntity.ok(ResponseDTO(
-                    message = "Success",
-                    result = response
-            ))
-        } catch (e: Exception) {
-            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
-            val function = "companyService.getAllConnections()"
-            return this.handleException(e, identity, function)
-        }
-    }
+//    /**
+//     * Get all connections
+//     */
+//
+//    @GetMapping(value = ["/connections"], produces = ["application/json"])
+//    private fun getAllConnections(@RequestHeader id: String): ResponseEntity<ResponseDTO>
+//    {
+//        return try
+//        {
+//            val response = companyService.getAllConnections(id)
+//            ResponseEntity.ok(ResponseDTO(
+//                    message = "Success",
+//                    result = response
+//            ))
+//        } catch (e: Exception) {
+//            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
+//            val function = "companyService.getAllConnections()"
+//            return this.handleException(e, identity, function)
+//        }
+//    }
 
     /**
      * Create Company
