@@ -24,8 +24,6 @@ class RegisterProductFlow (
         private val status: String,
         private val category: String,
         private val manufacturer: String,
-        private val CMMTitle: String,
-//        private val CMMStatus: String?,
         private val createdBy: String,
         private val transactionId: String
 ): FlowFunctions() {

@@ -11,6 +11,7 @@ import java.time.Instant
 @BelongsToContract(ConnectionContract::class)
 data class ConnectionState(val companyId: String,
                            val requestCompanyId: String,
+                           val requestNode: String,
                            val acceptedAt: Instant?,
                            val declinedAt: Instant?,
                            val reason: String?,
@@ -18,6 +19,5 @@ data class ConnectionState(val companyId: String,
                            val createdBy: String,
                            val createdAt: Instant,
                            val updatedAt: Instant?,
-                           val transactionId: String?,
                            override val linearId: UniqueIdentifier,
                            override val participants: List<Party>): LinearState

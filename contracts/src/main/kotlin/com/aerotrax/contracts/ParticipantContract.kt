@@ -5,10 +5,10 @@ import net.corda.core.contracts.Contract
 import net.corda.core.contracts.TypeOnlyCommandData
 import net.corda.core.transactions.LedgerTransaction
 
-class ConnectionContract : Contract {
+class ParticipantContract : Contract {
     companion object {
 
-        const val ID = "com.aerotrax.contracts.ConnectionContract"
+        const val ID = "com.aerotrax.contracts.ParticipantContract"
     }
 
     override fun verify(tx: LedgerTransaction) {
@@ -18,6 +18,6 @@ class ConnectionContract : Contract {
 
     interface Commands : CommandData {
         class Create : TypeOnlyCommandData(), Commands
-        class Update : TypeOnlyCommandData(), Commands
+        class Modify : TypeOnlyCommandData(), Commands
     }
 }

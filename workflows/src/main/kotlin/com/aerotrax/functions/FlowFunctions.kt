@@ -9,6 +9,7 @@ import com.aerotrax.constants.NodeConstants.Companion.OEM_NODE
 import com.aerotrax.states.CompanyState
 import com.aerotrax.states.ConnectionState
 import com.aerotrax.states.PartDetailState
+import com.aerotrax.states.ParticipantState
 import javassist.NotFoundException
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.contracts.UniqueIdentifier
@@ -62,24 +63,11 @@ abstract class FlowFunctions : FlowLogic<SignedTransaction>() {
         return UniqueIdentifier.fromString(id)
     }
 
-    fun stringToParty(name: String): Party
-    {
+    fun stringToParty(name: String): Party {
         return serviceHub.identityService.wellKnownPartyFromX500Name(CordaX500Name.parse(name))
                 ?: throw Exception("No match found for $name")
     }
 
-    fun getCompanyStateByString(id: String): StateAndRef<CompanyState>
-    {
-        return serviceHub.vaultService.queryBy<CompanyState>().states.find { it.state.data.linearId.toString() == id }
-                ?: throw NotFoundException("Company Not Found.")
-    }
-
-
-    fun getConnectionStateByUId(uid: UniqueIdentifier): StateAndRef<ConnectionState>
-    {
-        return serviceHub.vaultService.queryBy<ConnectionState>().states.find { it.state.data.linearId == uid }
-                ?: throw NotFoundException("Connection Not Found.")
-    }
     /**
      * Nodes
      */
@@ -93,5 +81,25 @@ abstract class FlowFunctions : FlowLogic<SignedTransaction>() {
     fun getAirline1Node() = stringToParty(AIRLINE1_NODE)
 
     fun getAirline2Node() = stringToParty(AIRLINE2_NODE)
+
+
+    /**
+     * Get State functions
+     */
+
+    fun getCompanyStateById(id: String): StateAndRef<CompanyState> {
+        return serviceHub.vaultService.queryBy<CompanyState>().states.find { it.state.data.linearId.toString() == id }
+                ?: throw NotFoundException("Company Not Found.")
+    }
+
+    fun getConnectionStateById(id: String): StateAndRef<ConnectionState> {
+        return serviceHub.vaultService.queryBy<ConnectionState>().states.find { it.state.data.linearId.toString() == id }
+                ?: throw NotFoundException("Connection Not Found.")
+    }
+
+    fun getParticipantStateById(id: String): StateAndRef<ParticipantState> {
+        return serviceHub.vaultService.queryBy<ParticipantState>().states.find { it.state.data.linearId.toString() == id }
+                ?: throw NotFoundException("Participant Not Found.")
+    }
 
 }

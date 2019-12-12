@@ -21,79 +21,65 @@ import java.time.Instant
 
 @StartableByRPC
 @InitiatingFlow
-class ApproveRejectConnectionFlow (private val connectionId: UniqueIdentifier,
+class ApproveRejectConnectionFlow (private val connectionId: String,
                                    private val approveReject: Boolean,
-                                   private val reason: String?,
+                                   private val reasonReject: String?,
                                    private val createdBy: String): FlowFunctions() {
 
     @Suspendable
-    override fun call(): SignedTransaction
-    {
-        val transaction = transaction()
-        val sessions = (outputConnectionState().participants - ourIdentity).map { initiateFlow(it as Party) }
-        val signedTransaction = verifyAndSign(transaction)
+    override fun call(): SignedTransaction {
+        val signedTransaction = verifyAndSign(transaction())
+        val sessions = (outputConnectionState().participants - ourIdentity).map { initiateFlow(it) }
         val transactionSignedByAllParties = collectSignature(signedTransaction, sessions)
         return recordTransactionWithCounterParty(transactionSignedByAllParties, sessions)
     }
 
+    private fun inputConnectionState(): StateAndRef<ConnectionState>{
+        return getConnectionStateById(connectionId)
+    }
+
     private fun outputConnectionState(): ConnectionState {
-        val connection = getConnectionStateByUId(connectionId)
-        val connectionCompanyId = connection.state.data.companyId
-        val connectionRequestId = connection.state.data.requestCompanyId
+        val inputState = inputConnectionState().state.data
+        val getCompanyName = inputState.requestCompanyId
+        val companyName = getCompanyStateById(getCompanyName).state.data.name
 
-        val requestingCompanyNode = getCompanyStateByString(connectionCompanyId).state.data.node
-
-            if (approveReject) {
-                if (connection.state.data.acceptedAt == null || connection.state.data.declinedAt == null) {
-                    throw CordaException ("Connection has been declined/approved before")
-                }
-
-                return ConnectionState(
-                        companyId = connectionCompanyId,
-                        requestCompanyId = connectionRequestId,
-                        acceptedAt = Instant.now(),
-                        declinedAt = null,
-                        reason = null,
-                        status = "Request connection sent.",
-                        createdBy = createdBy,
-                        createdAt = Instant.now(),
-                        updatedAt = Instant.now(),
-                        transactionId = null,
-                        linearId = connectionId,
-                        participants = listOf(ourIdentity, requestingCompanyNode)
-                )
-
-            } else {
-                if (connection.state.data.acceptedAt == null || connection.state.data.declinedAt == null) {
-                    throw CordaException ("Connection has been declined/approved before")
-                }
-
-                return ConnectionState(
-                        companyId = connectionCompanyId,
-                        requestCompanyId = connectionRequestId,
-                        acceptedAt = null,
-                        declinedAt = Instant.now(),
-                        reason = reason,
-                        status = "Request connection sent.",
-                        createdBy = createdBy,
-                        createdAt = Instant.now(),
-                        updatedAt = Instant.now(),
-                        transactionId = null,
-                        linearId = connectionId,
-                        participants = listOf(ourIdentity, requestingCompanyNode)
-                )
-            }
-
-
+        var acceptedAt: Instant?
+        var declinedAt: Instant?
+        var reason: String?
+        var status: String?
+        if (approveReject){
+            acceptedAt = Instant.now()
+            declinedAt = null
+            reason = null
+            status = "Approved connection with $companyName"
+        }else{
+            acceptedAt = null
+            declinedAt = Instant.now()
+            reason = reasonReject
+            status = "Rejected connection with $companyName"
         }
-
-
+        return ConnectionState(
+                companyId = inputState.companyId,
+                requestCompanyId = inputState.requestCompanyId,
+                requestNode = inputState.requestNode,
+                acceptedAt = acceptedAt,
+                declinedAt = declinedAt,
+                reason = reason,
+                status = status,
+                createdBy = createdBy,
+                createdAt = inputState.createdAt,
+                updatedAt = Instant.now(),
+                linearId = inputState.linearId,
+                participants = inputState.participants
+        )
+    }
 
     private fun transaction(): TransactionBuilder {
+        val output = outputConnectionState()
         val builder = TransactionBuilder(notary())
-        val productCmd = Command(ConnectionContract.Commands.Create(), outputConnectionState().participants.map { it.owningKey })
-        builder.addInputState(getConnectionStateByUId(connectionId))
-        builder.addOutputState(outputConnectionState(), ConnectionContract.ID)
+        val productCmd = Command(ConnectionContract.Commands.Update(), output.participants.map { it.owningKey })
+        builder.addInputState(inputConnectionState())
+        builder.addOutputState(output, ConnectionContract.ID)
         builder.addCommand(productCmd)
         return builder
     }
@@ -101,12 +87,10 @@ class ApproveRejectConnectionFlow (private val connectionId: UniqueIdentifier,
 
 @InitiatedBy(ApproveRejectConnectionFlow::class)
 class ApproveRejectConnectionFlowResponder(val flowSession: FlowSession) : FlowLogic<SignedTransaction>() {
-
     @Suspendable
     override fun call(): SignedTransaction {
         val signTransactionFlow = object : SignTransactionFlow(flowSession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
-
             }
         }
         val signedTransaction = subFlow(signTransactionFlow)

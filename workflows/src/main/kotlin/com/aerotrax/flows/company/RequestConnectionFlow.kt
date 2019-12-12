@@ -20,40 +20,29 @@ import java.time.Instant
 
 @StartableByRPC
 @InitiatingFlow
-class RequestConnectionFlow (private val ownCompanyId: String,
-                             private val requestCompanyId: String,
-                             private val createdBy: String): FlowFunctions() {
+class RequestConnectionFlow (
+        private val ownCompanyId: String,
+        private val requestCompanyId: String,
+        private val createdBy: String
+): FlowFunctions() {
 
     @Suspendable
-    override fun call(): SignedTransaction
-    {
-        val transaction = transaction()
+    override fun call(): SignedTransaction {
+        val signedTransaction = verifyAndSign(transaction())
         val sessions = (outputConnectionState().participants - ourIdentity).map { initiateFlow(it) }
-        val signedTransaction = verifyAndSign(transaction)
         val transactionSignedByAllParties = collectSignature(signedTransaction, sessions)
         return recordTransactionWithCounterParty(transactionSignedByAllParties, sessions)
     }
 
     private fun outputConnectionState(): ConnectionState {
-        val requestCompany = getCompanyStateByString(requestCompanyId)
-        val requestCompanyNode = requestCompany.state.data.node
 
-        println("******requestCompanyNode******")
-        println(requestCompanyNode.toString())
-        println("******requestCompanyNode******")
-
-        val ownCompany = getCompanyStateByString(ownCompanyId)
-        val ownCompanyNode = ownCompany.state.data.node
-
-        val self = ourIdentity.toString()
-
-        println("******ourIdentity******")
-        println(self)
-        println("******ourIdentity******")
+        val getRequestNode = getParticipantStateById(requestCompanyId).state.data.node
+        val requestNode = stringToParty(getRequestNode)
 
         return ConnectionState(
                 companyId = ownCompanyId, // company that is inviting
                 requestCompanyId = requestCompanyId, // company that is being invited
+                requestNode = getRequestNode, // company that is being invited node name
                 acceptedAt = null,
                 declinedAt = null,
                 reason = null,
@@ -61,50 +50,27 @@ class RequestConnectionFlow (private val ownCompanyId: String,
                 createdBy = createdBy,
                 createdAt = Instant.now(),
                 updatedAt = null,
-                transactionId = null,
                 linearId = UniqueIdentifier(),
-                participants = listOf(ourIdentity, requestCompanyNode)
+                participants = listOf(ourIdentity, requestNode)
         )
+    }
 
-        }
-
-//    private fun outputRequestCompanyState(): CompanyState {
-//
-//        val myCompany = getCompanyStateByString(requestCompanyId).state.data
-//        var request = myCompany.requests
-//        println(request)
-//        request?.add(requestCompanyId)
-//        println(request)
-//        return myCompany.copy(
-//                requests = request
-//        )
-//    }
-    
     private fun transaction(): TransactionBuilder {
+        val output = outputConnectionState()
         val builder = TransactionBuilder(notary())
-        println(outputConnectionState().participants)
-        val connectionCmd = Command(ConnectionContract.Commands.Create(), outputConnectionState().participants.map { it.owningKey })
-//        val companyCmd = Command(CompanyContract.Commands.Create(), outputRequestCompanyState().participants.map { it.owningKey })
-
-        builder.addInputState(getCompanyStateByString(requestCompanyId))
-
-        builder.addOutputState(outputConnectionState(), ConnectionContract.ID)
-//        builder.addOutputState(outputRequestCompanyState(), CompanyContract.ID)
-
+        val connectionCmd = Command(ConnectionContract.Commands.Create(), output.participants.map { it.owningKey })
+        builder.addOutputState(output, ConnectionContract.ID)
         builder.addCommand(connectionCmd)
-//        builder.addCommand(companyCmd)
         return builder
     }
 }
 
 @InitiatedBy(RequestConnectionFlow::class)
 class RequestConnectionFlowResponder(val flowSession: FlowSession) : FlowLogic<SignedTransaction>() {
-
     @Suspendable
     override fun call(): SignedTransaction {
         val signTransactionFlow = object : SignTransactionFlow(flowSession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
-
             }
         }
         val signedTransaction = subFlow(signTransactionFlow)
