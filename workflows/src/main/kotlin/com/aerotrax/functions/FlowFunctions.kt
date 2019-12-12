@@ -79,6 +79,15 @@ abstract class FlowFunctions : FlowLogic<SignedTransaction>() {
 
     fun getAirline2Node() = stringToParty(AIRLINE2_NODE)
 
+    fun parties(): List<Party>{
+        return listOf(
+                stringToParty(AEROTRAX_NODE),
+                stringToParty(MRO_NODE),
+                stringToParty(OEM_NODE),
+                stringToParty(AIRLINE1_NODE),
+                stringToParty(AIRLINE2_NODE)
+        )
+    }
 
     /**
      * Get State functions
