@@ -15,6 +15,7 @@ dependencies {
     // CorDapp dependencies.
     compile project(":contracts")
     compile project(":workflows")
+    compile project(":clients-common")
 
     compile("org.springframework.boot:spring-boot-starter-websocket:$spring_boot_version") {
         exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
@@ -27,7 +28,7 @@ dependencies {
 
 
 springBoot {
-    mainClassName = "com.template.webserver.ServerKt"
+    mainClassName = "com.aerotrax.webserver.ServerKt"
 }
 
 task runTemplateClient(type: JavaExec, dependsOn: assemble) {
