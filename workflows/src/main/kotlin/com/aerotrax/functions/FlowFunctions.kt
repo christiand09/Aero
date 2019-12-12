@@ -6,10 +6,7 @@ import com.aerotrax.constants.NodeConstants.Companion.AIRLINE1_NODE
 import com.aerotrax.constants.NodeConstants.Companion.AIRLINE2_NODE
 import com.aerotrax.constants.NodeConstants.Companion.MRO_NODE
 import com.aerotrax.constants.NodeConstants.Companion.OEM_NODE
-import com.aerotrax.states.CompanyState
-import com.aerotrax.states.ConnectionState
-import com.aerotrax.states.PartDetailState
-import com.aerotrax.states.ParticipantState
+import com.aerotrax.states.*
 import javassist.NotFoundException
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.contracts.UniqueIdentifier
@@ -89,17 +86,22 @@ abstract class FlowFunctions : FlowLogic<SignedTransaction>() {
 
     fun getCompanyStateById(id: String): StateAndRef<CompanyState> {
         return serviceHub.vaultService.queryBy<CompanyState>().states.find { it.state.data.linearId.toString() == id }
-                ?: throw NotFoundException("Company Not Found.")
+                ?: throw NotFoundException("Company Id Not Found.")
     }
 
     fun getConnectionStateById(id: String): StateAndRef<ConnectionState> {
         return serviceHub.vaultService.queryBy<ConnectionState>().states.find { it.state.data.linearId.toString() == id }
-                ?: throw NotFoundException("Connection Not Found.")
+                ?: throw NotFoundException("Connection Id Not Found.")
     }
 
     fun getParticipantStateById(id: String): StateAndRef<ParticipantState> {
         return serviceHub.vaultService.queryBy<ParticipantState>().states.find { it.state.data.linearId.toString() == id }
-                ?: throw NotFoundException("Participant Not Found.")
+                ?: throw NotFoundException("Participant Id Not Found.")
+    }
+
+    fun getProductStateById(id: String): StateAndRef<ProductState> {
+        return serviceHub.vaultService.queryBy<ProductState>().states.find { it.state.data.linearId.toString() == id }
+                ?: throw NotFoundException("Product Id Not Found.")
     }
 
 }

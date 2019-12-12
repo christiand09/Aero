@@ -21,4 +21,4 @@ data class BuyerState(val companyId: String,
                       val updatedAt: Instant?,
                       val transactionId: String,
                       override val linearId: UniqueIdentifier,
-                      override val participants: List<AbstractParty>): LinearState
+                      override val participants: List<Party>): LinearState

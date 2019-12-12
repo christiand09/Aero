@@ -36,12 +36,7 @@ class RegisterProductFlow (
     }
 
     private fun outputProductState(): ProductState {
-
-        val companyState = serviceHub.vaultService.queryBy<CompanyState>().states.find {
-            it.state.data.linearId == stringToLinearID(companyId)
-        }?: throw NotFoundException("Company Id not found")
-
-        val companyName = companyState.state.data.name
+        val companyName = getCompanyStateById(companyId).state.data.name
 
         return ProductState(
                 companyId = companyId,
@@ -54,7 +49,7 @@ class RegisterProductFlow (
                 manufacturer = manufacturer,
                 registeredOwner = companyName,
                 newOwner = null,
-                partAvailability = "Registering",
+                partAvailability = "registering",
                 views = null,
                 rate = null,
                 dealBit = null,
@@ -67,8 +62,6 @@ class RegisterProductFlow (
                 participants = listOf(ourIdentity)
         )
     }
-
-
 
     private fun transaction(): TransactionBuilder {
         val builder = TransactionBuilder(notary())
