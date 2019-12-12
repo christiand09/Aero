@@ -5,6 +5,7 @@ import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.AbstractParty
+import net.corda.core.identity.Party
 import java.time.Instant
 
 @BelongsToContract(DocumentContract::class)
@@ -20,4 +21,4 @@ data class DocumentState(val companyId: String,
                          val updatedAt: Instant?,
                          val transactionId: String,
                          override val linearId: UniqueIdentifier,
-                         override val participants: List<AbstractParty>): LinearState
+                         override val participants: List<Party>): LinearState

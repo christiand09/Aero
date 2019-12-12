@@ -14,7 +14,6 @@ import java.time.Instant
 @StartableByRPC
 class RegisterCMMFlow (
         private val productId: String,
-        private val serialNumber: String,
         private val CMMTitle: String,
         private val createdBy: String
 ): FlowFunctions() {
@@ -27,10 +26,12 @@ class RegisterCMMFlow (
     }
 
     private fun outputCMMState(): CMMState {
+        val productState = getProductStateById(productId).state.data
+        val serialNumber = productState.serialNumber
 
         return CMMState(
                 serialNumber = serialNumber,
-                productId = productId,
+                productId = productState.linearId.toString(),
                 title = CMMTitle,
                 status = "completed",
                 createdBy = createdBy,
