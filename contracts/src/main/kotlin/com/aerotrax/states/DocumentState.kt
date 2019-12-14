@@ -10,15 +10,15 @@ import java.time.Instant
 
 @BelongsToContract(DocumentContract::class)
 data class DocumentState(val companyId: String,
-                         val serialNumber: String,
-                         val productId: String,
+                         val serialNumber: String?,
+                         val productId: String?,
                          val name: String,
-                         val size: String?,
-                         val url: String?,
-                         val type: Instant?,
+                         val size: String,
+                         val url: String,
+                         val hash: String,
+                         val type: String,
                          val uploadedBy: String,
                          val uploadedAt: Instant,
                          val updatedAt: Instant?,
-                         val transactionId: String,
                          override val linearId: UniqueIdentifier,
                          override val participants: List<Party>): LinearState
