@@ -9,7 +9,7 @@ class AppConstants {
         //SERVER
         const val FILE_STORAGE_PATH = "/opt/corda/file-storage"
         //LOCAL
-        const val FILE_STORAGE_PATH_LOCAL = "C:\\Users\\christian.dismaya\\Desktop\\Projects\\BE\\Aerotrax\\Aero\\clients-aerotrax"
+        const val FILE_STORAGE_PATH_LOCAL = "C:\\Users\\joyce.mamac\\Desktop\\Aero\\clients-aerotrax"
 
     }
 }

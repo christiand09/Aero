@@ -2,6 +2,7 @@ package com.aerotrax.services
 
 import com.aerotrax.dto.MainCompanyDTO
 import com.aerotrax.dto.mapToMainCompanyDTO
+import com.aerotrax.flows.company.AddNewParticipantFlow
 import com.aerotrax.flows.company.RegisterCompanyFlow
 import com.aerotrax.services.interfaces.IAuth
 import com.aerotrax.states.CompanyState
@@ -18,6 +19,7 @@ class AuthService (private val rpc: NodeRPCConnection, private val fhc: FlowHand
         val email = "admin@aerotrax"
         val password = "qwerty"
         val type = "company"
+        val node = "O=Aerotrax, L=London, C=GB"
         val logoImage = "image"
         val contactNumber = "212-201-2377"
         val rate = null
@@ -58,6 +60,31 @@ class AuthService (private val rpc: NodeRPCConnection, private val fhc: FlowHand
         )
         fhc.flowHandlerCompletion(flowReturn)
         val flowResult = flowReturn.returnValue.get().coreTransaction.outputStates.first() as CompanyState
+
+        val flowReturnParticipant = rpc.proxy.startFlowDynamic(
+                AddNewParticipantFlow::class.java,
+                name,
+                email,
+                type,
+                node,
+                logoImage,
+                contactNumber,
+                rate,
+                website,
+                linkedIn,
+                about,
+                location,
+                addressLine1,
+                addressLine2,
+                city,
+                state,
+                country,
+                zipCode,
+                review,
+                flowResult.linearId.toString()
+        )
+        fhc.flowHandlerCompletion(flowReturnParticipant)
+
         return mapToMainCompanyDTO(flowResult)
     }
 
