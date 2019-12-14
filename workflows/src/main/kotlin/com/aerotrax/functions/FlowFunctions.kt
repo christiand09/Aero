@@ -84,8 +84,8 @@ abstract class FlowFunctions : FlowLogic<SignedTransaction>() {
                 stringToParty(AEROTRAX_NODE),
                 stringToParty(MRO_NODE),
                 stringToParty(OEM_NODE),
-                stringToParty(AIRLINE1_NODE),
-                stringToParty(AIRLINE2_NODE)
+                stringToParty(AIRLINE1_NODE)
+//                stringToParty(AIRLINE2_NODE)
         )
     }
 

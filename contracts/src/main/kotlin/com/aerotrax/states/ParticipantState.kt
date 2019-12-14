@@ -25,5 +25,6 @@ data class ParticipantState(val name: String,
                             val country: String?,
                             val zipCode: String?,
                             val review: String?,
+
                             override val linearId: UniqueIdentifier,
                             override val participants: List<Party>): LinearState

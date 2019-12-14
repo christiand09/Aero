@@ -39,7 +39,7 @@ class RegisterCompanyFlow (
         val output = outputCompanyState()
         val signedTransaction = verifyAndSign(transaction())
         return recordTransactionWithoutCounterParty(signedTransaction).also {
-            AddNewParticipantFlow(
+            subFlow(AddNewParticipantFlow(
                     name = output.name,
                     email = output.email,
                     type = output.type,
@@ -59,6 +59,7 @@ class RegisterCompanyFlow (
                     zipCode = output.zipCode,
                     review = output.review,
                     linearId = output.linearId.toString()
+            )
             )
         }
     }

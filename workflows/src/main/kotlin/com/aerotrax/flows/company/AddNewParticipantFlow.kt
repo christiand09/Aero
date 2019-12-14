@@ -45,6 +45,26 @@ class AddNewParticipantFlow (
     }
 
     private fun outputParticipantState(): ParticipantState {
+        val participantStateIsEmpty = serviceHub.vaultService.queryBy<ParticipantState>().states.isEmpty()
+        val participantState = serviceHub.vaultService.queryBy<ParticipantState>().states.map {
+            it.state.data.node
+        }
+        println("####################################")
+        println(participantState)
+        println("####################################")
+        val listOfParticipant = participantState.toMutableList()
+
+        var participants: List<Party>
+        participants = if (participantStateIsEmpty){
+            listOf(stringToParty(node))
+        }else{
+            listOfParticipant.add(node)
+            listOfParticipant.map { stringToParty(it) }
+        }
+
+        println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        println(participants)
+        println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 
         return ParticipantState(
                 name = name,

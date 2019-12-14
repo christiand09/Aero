@@ -41,8 +41,17 @@ class ApproveRejectConnectionFlow (private val connectionId: String,
     private fun outputConnectionState(): ConnectionState {
         val inputState = inputConnectionState().state.data
         val getCompanyName = inputState.requestCompanyId
-        val companyName = getCompanyStateById(getCompanyName).state.data.name
+        val acceptedAtEntry = inputState.acceptedAt
+        val declinedAtEntry = inputState.declinedAt
 
+        if (acceptedAtEntry != null || declinedAtEntry != null){
+            if (acceptedAtEntry != null){ throw CordaException("This connection has been approved.") }
+            if (declinedAtEntry != null){ throw CordaException("This connection has been declined.") }
+        }
+
+        println(getCompanyName)
+        val companyName = getParticipantStateById(getCompanyName).state.data.name
+        println(companyName)
         var acceptedAt: Instant?
         var declinedAt: Instant?
         var reason: String?
