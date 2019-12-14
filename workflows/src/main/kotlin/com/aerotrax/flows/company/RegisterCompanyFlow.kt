@@ -4,9 +4,11 @@ import co.paralleluniverse.fibers.Suspendable
 import com.aerotrax.contracts.CompanyContract
 import com.aerotrax.functions.FlowFunctions
 import com.aerotrax.states.CompanyState
+import net.corda.core.CordaException
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.StartableByRPC
+import net.corda.core.node.services.queryBy
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import java.time.Instant
@@ -36,6 +38,12 @@ class RegisterCompanyFlow (
 
     @Suspendable
     override fun call(): SignedTransaction {
+
+        val companyState = serviceHub.vaultService.queryBy<CompanyState>().states
+
+        if (companyState.isNotEmpty()){
+            throw CordaException("A company has already been registered.")
+        }
         val output = outputCompanyState()
         val signedTransaction = verifyAndSign(transaction())
         return recordTransactionWithoutCounterParty(signedTransaction).also {
@@ -58,10 +66,14 @@ class RegisterCompanyFlow (
                     country = output.country,
                     zipCode = output.zipCode,
                     review = output.review,
-                    linearId = output.linearId.toString()
+                    linearId = companyId().toString()
             )
             )
         }
+    }
+
+    private fun companyId(): UniqueIdentifier{
+        return UniqueIdentifier()
     }
 
     private fun outputCompanyState(): CompanyState {
@@ -88,7 +100,7 @@ class RegisterCompanyFlow (
                 createdBy = createdBy,
                 createdAt = Instant.now(),
                 updatedAt = null,
-                linearId = UniqueIdentifier(),
+                linearId = companyId(),
                 participants = listOf(ourIdentity)
         )
     }

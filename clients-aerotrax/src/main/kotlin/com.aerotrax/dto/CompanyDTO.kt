@@ -30,6 +30,7 @@ data class RegisterCompanyDTO(
 
 data class RequestConnectionDTO(
         val requestCompanyId: String,
+        val requestMessage: String,
         val createdBy: String
 )
 
@@ -44,6 +45,7 @@ data class MainConnectionDTO(
         val companyId: String,
         val requestCompanyId: String,
         val requestNode: String,
+        val requestMessage: String?,
         val acceptedAt: Instant?,
         val declinedAt: Instant?,
         val reason: String?,
@@ -95,6 +97,7 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
             companyId = state.companyId,
             requestCompanyId = state.requestCompanyId,
             requestNode = state.requestNode,
+            requestMessage = state.requestMessage,
             acceptedAt = state.acceptedAt,
             declinedAt = state.declinedAt,
             reason = state.reason,
@@ -103,7 +106,7 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
             createdAt = state.createdAt,
             updatedAt = state.updatedAt,
             linearId = state.linearId.toString(),
-            participants = state.participants?.map { it.toString() }
+            participants = state.participants.map { it.toString() }
         )
 }
 data class MainCompanyDTO(
@@ -159,7 +162,7 @@ fun mapToMainCompanyDTO(state: CompanyState) : MainCompanyDTO {
             createdAt =  state.createdAt,
             updatedAt = state.updatedAt,
             linearId = state.linearId.toString(),
-            participants = state.participants?.map { it.toString() }
+            participants = state.participants.map { it.toString() }
     )
 }
 
@@ -206,6 +209,6 @@ fun mapToMainParticipantDTO(state: ParticipantState) : MainParticipantDTO {
             zipCode= state.zipCode,
             review =  state.review,
             linearId = state.linearId.toString(),
-            participants = state.participants?.map { it.toString() }
+            participants = state.participants.map { it.toString() }
     )
 }

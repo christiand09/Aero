@@ -41,6 +41,7 @@ class ApproveRejectConnectionFlow (private val connectionId: String,
     private fun outputConnectionState(): ConnectionState {
         val inputState = inputConnectionState().state.data
         val getCompanyName = inputState.requestCompanyId
+        val getOtherCompanyName = inputState.companyId
         val acceptedAtEntry = inputState.acceptedAt
         val declinedAtEntry = inputState.declinedAt
 
@@ -51,6 +52,7 @@ class ApproveRejectConnectionFlow (private val connectionId: String,
 
         println(getCompanyName)
         val companyName = getParticipantStateById(getCompanyName).state.data.name
+        val otherCompanyName = getParticipantStateById(getOtherCompanyName).state.data.name
         println(companyName)
         var acceptedAt: Instant?
         var declinedAt: Instant?
@@ -60,17 +62,18 @@ class ApproveRejectConnectionFlow (private val connectionId: String,
             acceptedAt = Instant.now()
             declinedAt = null
             reason = null
-            status = "Approved connection with $companyName"
+            status = "$companyName approved connection with $otherCompanyName"
         }else{
             acceptedAt = null
             declinedAt = Instant.now()
             reason = reasonReject
-            status = "Rejected connection with $companyName"
+            status = "$companyName rejected connection with $otherCompanyName"
         }
         return ConnectionState(
                 companyId = inputState.companyId,
                 requestCompanyId = inputState.requestCompanyId,
                 requestNode = inputState.requestNode,
+                requestMessage = inputState.requestMessage,
                 acceptedAt = acceptedAt,
                 declinedAt = declinedAt,
                 reason = reason,
@@ -82,7 +85,6 @@ class ApproveRejectConnectionFlow (private val connectionId: String,
                 participants = inputState.participants
         )
     }
-
     private fun transaction(): TransactionBuilder {
         val output = outputConnectionState()
         val builder = TransactionBuilder(notary())

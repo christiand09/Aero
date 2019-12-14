@@ -17,7 +17,10 @@ interface ICompany
     fun getAllMyConnectionRequests(id:String): MutableList<MainConnectionWithCompanyDTO> // get all my connection request to other company
     fun getNumberCurrentConnections(id:String): String // get number of my current connection
     fun getNumberRequestConnections(id:String): String // get number of all pending connection request made by other company
-    fun sortCurrentConnection(id: String, sortType: String): List<MainParticipantDTO>
+    fun sortCurrentConnection(id: String, sortType: String):  List<MainConnectionWithCompanyDTO>
+//    fun sortCurrentConnection(id: String, sortType: String): List<MainParticipantDTO>
+//    fun sortCurrentConnection(id: String, sortType: String): List<MainParticipantDTO>
+
 //    fun getAllRequestingConnections(id:String): List<MainCompanyDTO>
 //    fun getCurrentByFaveConnections(): List<MainCompanyDTO>
 }

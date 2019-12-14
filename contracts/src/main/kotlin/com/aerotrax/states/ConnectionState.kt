@@ -12,6 +12,7 @@ import java.time.Instant
 data class ConnectionState(val companyId: String,
                            val requestCompanyId: String,
                            val requestNode: String,
+                           val requestMessage: String?,
                            val acceptedAt: Instant?,
                            val declinedAt: Instant?,
                            val reason: String?,

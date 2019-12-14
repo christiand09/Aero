@@ -103,7 +103,7 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
             createdAt = state.createdAt,
             updatedAt = state.updatedAt,
             linearId = state.linearId.toString(),
-            participants = state.participants?.map { it.toString() }
+            participants = state.participants.map { it.toString() }
         )
 }
 data class MainCompanyDTO(
@@ -159,7 +159,7 @@ fun mapToMainCompanyDTO(state: CompanyState) : MainCompanyDTO {
             createdAt =  state.createdAt,
             updatedAt = state.updatedAt,
             linearId = state.linearId.toString(),
-            participants = state.participants?.map { it.toString() }
+            participants = state.participants.map { it.toString() }
     )
 }
 
@@ -206,6 +206,6 @@ fun mapToMainParticipantDTO(state: ParticipantState) : MainParticipantDTO {
             zipCode= state.zipCode,
             review =  state.review,
             linearId = state.linearId.toString(),
-            participants = state.participants?.map { it.toString() }
+            participants = state.participants.map { it.toString() }
     )
 }

@@ -23,6 +23,7 @@ import java.time.Instant
 class RequestConnectionFlow (
         private val ownCompanyId: String,
         private val requestCompanyId: String,
+        private val requestMessage: String,
         private val createdBy: String
 ): FlowFunctions() {
 
@@ -43,6 +44,7 @@ class RequestConnectionFlow (
                 companyId = ownCompanyId, // company that is inviting
                 requestCompanyId = requestCompanyId, // company that is being invited
                 requestNode = getRequestNode, // company that is being invited node name
+                requestMessage = requestMessage,
                 acceptedAt = null,
                 declinedAt = null,
                 reason = null,

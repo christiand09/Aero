@@ -1,4 +1,4 @@
-package com.template.webserver
+package com.aerotrax.webserver
 
 import com.aerotrax.webserver.NodeRPCConnection
 import org.slf4j.LoggerFactory

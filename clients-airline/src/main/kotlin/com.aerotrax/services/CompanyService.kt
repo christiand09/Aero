@@ -130,7 +130,7 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
         if(searchText == null || searchText.isEmpty())
             return participantState.map { mapToMainParticipantDTO(it.state.data) }
 //        val normalizedSearchText = searchText.toLowerCase().trim()
-            return participantState.map { mapToMainParticipantDTO(it.state.data) }.filter { it.name.contains(searchText, true)}
+        return participantState.map { mapToMainParticipantDTO(it.state.data) }.filter { it.name.contains(searchText, true)}
     }
 
     override fun getAllParticipants(): List<MainParticipantDTO>
@@ -143,7 +143,7 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
     {
         val connectionState = rpc.proxy.vaultQuery(ConnectionState::class.java).states
         val myConnection =  connectionState.map { it }.filter { (it.state.data.companyId == id || it.state.data.requestCompanyId == id) && it.state.data.acceptedAt != null  }
-                if (myConnection.isEmpty()) throw CordaException("You do not have any connections yet")
+        if (myConnection.isEmpty()) throw CordaException("You do not have any connections yet")
 
         val list = mutableListOf<MainConnectionWithCompanyDTO>()
 
@@ -157,9 +157,9 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
                 list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
             }
             else{
-            val myParticipants = participantState.find { it.state.data.linearId.toString() == connect.state.data.companyId }
-                    ?:throw NotFoundException("Participant not found.")
-            list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))}
+                val myParticipants = participantState.find { it.state.data.linearId.toString() == connect.state.data.companyId }
+                        ?:throw NotFoundException("Participant not found.")
+                list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))}
         }
         return list
     }
@@ -218,36 +218,70 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
         return number
     }
 
-    override fun sortCurrentConnection(id: String, sortType: String) : List<MainParticipantDTO> {
-        //sortTypes: favorite, dateAdded, AZ, ZA
+//    override fun sortCurrentConnection(id: String, sortType: String) : List<MainConnectionWithCompanyDTO> {
+//        //sortTypes: favorite, dateAdded, AZ, ZA
+//
+//        val connectionState = rpc.proxy.vaultQuery(ConnectionState::class.java).states
+//        val myConnection =  connectionState.map { it }.filter { (it.state.data.companyId == id || it.state.data.requestCompanyId == id) && it.state.data.acceptedAt != null  }
+//        if (myConnection.isEmpty()) throw CordaException("You do not have any connections yet")
+//
+////        val list = mutableListOf<Pair<String, String>>()
+//
+//        val mainList = mutableListOf<MainConnectionWithCompanyDTO>()
+//
+//        val list = mutableListOf<String>()
+//        myConnection.map {list.add(it.state.data.requestCompanyId) }
+//        myConnection.map { list.add(it.state.data.companyId) }
+//        val finalList = list.distinct()
+//
+//        finalList.map{companyId ->
+//
+//
+//        }
+//        val participantList = mutableListOf<ParticipantState>()
+//        val participantState = rpc.proxy.vaultQuery(ParticipantState::class.java).states
+//
+//        finalList.map {participant ->
+//            val myParticipants = participantState.find { it.state.data.linearId.toString() == participant }!!.state.data
+//            participantList.add(myParticipants)
+//        }
+//        println(sortType)
+//        return when {
+//            sortType.contains("AZ") -> participantList.map { mapToMainConnectionWithCompanyDTO(it) }.sortedWith(compareBy { it.name })
+//            sortType.contains("ZA") -> participantList.map { mapToMainConnectionWithCompanyDTO(it) }.sortedByDescending { it.name }
+//            else -> participantList.map { mapToMainConnectionWithCompanyDTO(it) }
+//        }
+//
+//    }
 
+    override fun sortCurrentConnection(id: String, sortType: String): List<MainConnectionWithCompanyDTO>
+    {
         val connectionState = rpc.proxy.vaultQuery(ConnectionState::class.java).states
         val myConnection =  connectionState.map { it }.filter { (it.state.data.companyId == id || it.state.data.requestCompanyId == id) && it.state.data.acceptedAt != null  }
         if (myConnection.isEmpty()) throw CordaException("You do not have any connections yet")
 
+        val list = mutableListOf<MainConnectionWithCompanyDTO>()
 
-//        val list = mutableListOf<Pair<String, String>>()
-
-        val list = mutableListOf<String>()
-        myConnection.map {list.add(it.state.data.requestCompanyId) }
-        myConnection.map { list.add(it.state.data.companyId) }
-
-        val finalList = list.distinct()
-
-        val participantList = mutableListOf<ParticipantState>()
         val participantState = rpc.proxy.vaultQuery(ParticipantState::class.java).states
 
-        finalList.map {participant ->
-            val myParticipants = participantState.find { it.state.data.linearId.toString() == participant }!!.state.data
-            participantList.add(myParticipants)
+        myConnection.map { connect ->
+            if (connect.state.data.companyId == id){
+                val myParticipants = participantState.find { it.state.data.linearId.toString() == connect.state.data.requestCompanyId }
+                        ?:throw NotFoundException("Participant not found.")
+                list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+            }
+            else{
+                val myParticipants = participantState.find { it.state.data.linearId.toString() == connect.state.data.companyId }
+                        ?:throw NotFoundException("Participant not found.")
+                list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))}
         }
         println(sortType)
         return when {
-            sortType.contains("AZ") -> participantList.map { mapToMainParticipantDTO(it) }.sortedWith(compareBy { it.name })
-            sortType.contains("ZA") -> participantList.map { mapToMainParticipantDTO(it) }.sortedByDescending { it.name }
-            else -> participantList.map { mapToMainParticipantDTO(it) }
+            sortType.contains("AZ", true) -> list.sortedWith(compareBy { it.companyDetails.name })
+            sortType.contains("ZA", true) -> list.sortedByDescending { it.companyDetails.name }
+            sortType.contains("date", true) -> list.sortedWith(compareBy { it.acceptedAt })
+            else -> list
         }
-
     }
 
 }
