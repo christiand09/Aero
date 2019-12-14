@@ -1,5 +1,6 @@
 package com.aerotrax.util
 
+import com.aerotrax.states.ARCState
 import com.aerotrax.states.CompanyState
 import com.aerotrax.states.DocumentState
 import com.aerotrax.states.ProductState
@@ -24,6 +25,10 @@ class Functions(private val rpc: NodeRPCConnection){
         return rpc.proxy.vaultQuery(CompanyState::class.java).states
     }
 
+    fun arcState(): List<StateAndRef<ARCState>>{
+        return rpc.proxy.vaultQuery(ARCState::class.java).states
+    }
+
     fun returnProductState(flowReturn: FlowHandle<SignedTransaction>): ProductState{
         return flowReturn.returnValue.get().coreTransaction.outputStates.first() as ProductState
     }
@@ -34,5 +39,9 @@ class Functions(private val rpc: NodeRPCConnection){
 
     fun returnCompanyState(flowReturn: FlowHandle<SignedTransaction>): CompanyState{
         return flowReturn.returnValue.get().coreTransaction.outputStates.first() as CompanyState
+    }
+
+    fun returnARCState(flowReturn: FlowHandle<SignedTransaction>): ARCState{
+        return flowReturn.returnValue.get().coreTransaction.outputStates.first() as ARCState
     }
 }

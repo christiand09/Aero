@@ -113,4 +113,9 @@ abstract class FlowFunctions : FlowLogic<SignedTransaction>() {
                 ?: throw NotFoundException("Product Id Not Found.")
     }
 
+    fun getARCStateById(id: String): StateAndRef<ARCState> {
+        return serviceHub.vaultService.queryBy<ARCState>().states.find { it.state.data.linearId.toString() == id }
+                ?: throw NotFoundException("ARC Id Not Found.")
+    }
+
 }

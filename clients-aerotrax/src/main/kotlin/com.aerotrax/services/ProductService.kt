@@ -1,11 +1,7 @@
 package com.aerotrax.services
 
-import com.aerotrax.dto.MainProductDTO
-import com.aerotrax.dto.RegisterProductFlowDTO
-import com.aerotrax.dto.mapToMainProductDTO
-import com.aerotrax.flows.product.RegisterCMMFlow
-import com.aerotrax.flows.product.RegisterPartDetailFlow
-import com.aerotrax.flows.product.RegisterProductFlow
+import com.aerotrax.dto.*
+import com.aerotrax.flows.product.*
 import com.aerotrax.services.interfaces.IProduct
 import com.aerotrax.util.AppConstants
 import com.aerotrax.util.FlowHandlerCompletion
@@ -78,6 +74,26 @@ class ProductService (private val rpc: NodeRPCConnection, private val fhc: FlowH
             fhc.flowHandlerCompletion(registerCMMFlowReturn)
         }
 
+        val generateARCFlowReturn = rpc.proxy.startFlowDynamic(
+                GenerateARCFlow::class.java,
+                request.companyId,
+                productState.linearId.toString()
+        )
+        fhc.flowHandlerCompletion(generateARCFlowReturn)
+
         return mapToMainProductDTO(productState)
+    }
+
+    override fun createARC(request: RegisterARCFlowDTO): MainARCDTO {
+        val registerARCFlowReturn = rpc.proxy.startFlowDynamic(
+                RegisterARCFlow::class.java,
+                request.arcId,
+                request.remarks,
+                request.approvedReject,
+                request.createdBy
+        )
+        fhc.flowHandlerCompletion(registerARCFlowReturn)
+        val arcState = state.returnARCState(registerARCFlowReturn)
+        return mapToMainARCDTO(arcState)
     }
 }
