@@ -2,6 +2,7 @@ package com.aerotrax.services
 
 import com.aerotrax.AppConstants.Companion.DEFAULT_USER_ID
 import com.aerotrax.dto.*
+import com.aerotrax.flows.company.AddNewParticipantFlow
 import com.aerotrax.flows.company.ApproveRejectConnectionFlow
 import com.aerotrax.flows.company.RegisterCompanyFlow
 import com.aerotrax.flows.company.RequestConnectionFlow
@@ -40,39 +41,8 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
         return mapToMainCompanyDTO(company)
     }
 
-//    override fun getAllRequestingConnections(id:String): List<MainCompanyDTO>
-//    {
-//        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states
-//        val company = companyState.find { it.state.data.linearId.toString() == id }?.state?.data ?: throw NotFoundException("Company Not Found")
-//
-//        val requests = company.requests
-//        val myRequests = mutableListOf<CompanyState>()
-//
-//        requests?.map { company ->
-//            val otherCompany = companyState.find { it.state.data.linearId.toString() == company }
-//            myRequests.add(otherCompany!!.state.data)
-//        }
-//        return myRequests.map { mapToMainCompanyDTO(it) }
-//    }
-
-//    override fun getAllConnections(id:String): List<MainCompanyDTO>
-//    {
-//        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states
-//        val company = companyState.find { it.state.data.linearId.toString() == id }?.state?.data ?: throw NotFoundException("Company Not Found")
-//
-//        val connections = company.connections
-//        val myConnections = mutableListOf<CompanyState>()
-//
-//        connections?.map { company ->
-//        val otherCompany = companyState.find { it.state.data.linearId.toString() == company }
-//        myConnections.add(otherCompany!!.state.data)
-//        }
-//        return myConnections.map { mapToMainCompanyDTO(it) }
-//    }
-
-    override fun createCompany(request: RegisterCompanyDTO): MainCompanyDTO
-    {
-        val flowReturn = rpc.proxy.startFlowDynamic(
+    override fun createCompany(request: RegisterCompanyDTO): MainCompanyDTO {
+        val registerCompanyFlowReturn = rpc.proxy.startFlowDynamic(
                 RegisterCompanyFlow::class.java,
                 request.name,
                 request.email,
@@ -94,9 +64,34 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
                 request.review,
                 request.createdBy
         )
+        fhc.flowHandlerCompletion(registerCompanyFlowReturn)
+        val companyState = registerCompanyFlowReturn.returnValue.get().coreTransaction.outputStates.first() as CompanyState
+
+        val flowReturn = rpc.proxy.startFlowDynamic(
+                AddNewParticipantFlow::class.java,
+                request.name,
+                request.email,
+                request.type,
+                companyState.node,
+                request.logoImage,
+                request.contactNumber,
+                request.rate,
+                request.website,
+                request.linkedIn,
+                request.about,
+                request.location,
+                request.addressLine1,
+                request.addressLine2,
+                request.city,
+                request.state,
+                request.country,
+                request.zipCode,
+                request.review,
+                companyState.linearId.toString()
+        )
         fhc.flowHandlerCompletion(flowReturn)
-        val flowResult = flowReturn.returnValue.get().coreTransaction.outputStates.first() as CompanyState
-        return mapToMainCompanyDTO(flowResult)
+
+        return mapToMainCompanyDTO(companyState)
     }
 
     override fun requestConnection(id: String, request: RequestConnectionDTO): MainConnectionDTO

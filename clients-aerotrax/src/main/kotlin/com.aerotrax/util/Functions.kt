@@ -16,10 +16,6 @@ class Functions(private val rpc: NodeRPCConnection){
         return rpc.proxy.vaultQuery(ProductState::class.java).states
     }
 
-    fun flow(logicType: Class<out FlowLogic<SignedTransaction>>,vararg arg: Any?): FlowHandle<SignedTransaction>{
-        return rpc.proxy.startFlowDynamic(logicType, arg)
-    }
-
     fun returnProductState(flowReturn: FlowHandle<SignedTransaction>): ProductState{
         return flowReturn.returnValue.get().coreTransaction.outputStates.first() as ProductState
     }
