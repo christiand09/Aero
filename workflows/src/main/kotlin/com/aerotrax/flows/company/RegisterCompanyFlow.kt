@@ -38,42 +38,16 @@ class RegisterCompanyFlow (
 
     @Suspendable
     override fun call(): SignedTransaction {
+        condition()
+        val signedTransaction = verifyAndSign(transaction())
+        return recordTransactionWithoutCounterParty(signedTransaction)
+    }
 
+    private fun condition(){
         val companyState = serviceHub.vaultService.queryBy<CompanyState>().states
-
         if (companyState.isNotEmpty()){
             throw CordaException("A company has already been registered.")
         }
-        val output = outputCompanyState()
-        val signedTransaction = verifyAndSign(transaction())
-        return recordTransactionWithoutCounterParty(signedTransaction).also {
-            subFlow(AddNewParticipantFlow(
-                    name = output.name,
-                    email = output.email,
-                    type = output.type,
-                    node = output.node,
-                    logoImage = output.logoImage,
-                    contactNumber = output.contactNumber,
-                    rate = output.rate,
-                    website = output.website,
-                    linkedIn = output.linkedIn,
-                    about = output.about,
-                    location = output.location,
-                    addressLine1 = output.addressLine1,
-                    addressLine2 = output.addressLine2,
-                    city = output.city,
-                    state = output.state,
-                    country = output.country,
-                    zipCode = output.zipCode,
-                    review = output.review,
-                    linearId = companyId().toString()
-            )
-            )
-        }
-    }
-
-    private fun companyId(): UniqueIdentifier{
-        return UniqueIdentifier()
     }
 
     private fun outputCompanyState(): CompanyState {
@@ -100,7 +74,7 @@ class RegisterCompanyFlow (
                 createdBy = createdBy,
                 createdAt = Instant.now(),
                 updatedAt = null,
-                linearId = companyId(),
+                linearId = UniqueIdentifier(),
                 participants = listOf(ourIdentity)
         )
     }

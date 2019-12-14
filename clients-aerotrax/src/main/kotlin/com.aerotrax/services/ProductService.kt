@@ -24,6 +24,10 @@ class ProductService (private val rpc: NodeRPCConnection, private val fhc: FlowH
         currentCompanyId = userId ?: currentCompanyId
     }
 
+    override fun get(linearId: String): Any {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getAllProduct(): List<MainProductDTO> {
         val productState = state.productState()
         return productState.map { mapToMainProductDTO(it.state.data) }

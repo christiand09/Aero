@@ -35,7 +35,7 @@ class RegisterProductFlow (
     }
 
     private fun outputProductState(): ProductState {
-//        val companyName = getCompanyStateById(companyId).state.data.name
+        val companyName = getCompanyStateById(companyId).state.data.name
 
         return ProductState(
                 companyId = companyId,
@@ -46,7 +46,7 @@ class RegisterProductFlow (
                 status = status,
                 category = category,
                 manufacturer = manufacturer,
-                registeredOwner = "companyName",
+                registeredOwner = companyName,
                 newOwner = null,
                 partAvailability = "registering",
                 views = null,

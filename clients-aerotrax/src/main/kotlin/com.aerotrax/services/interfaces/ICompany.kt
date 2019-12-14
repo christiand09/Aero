@@ -3,8 +3,7 @@ package com.aerotrax.services.interfaces
 import com.aerotrax.dto.*
 import com.aerotrax.states.ParticipantState
 
-interface ICompany
-{
+interface ICompany {
     var currentUserId: String
     fun setCurrentUserDetails(userId: String?)
 
