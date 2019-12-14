@@ -8,6 +8,8 @@ interface ICompany
     var currentUserId: String
     fun setCurrentUserDetails(userId: String?)
 
+    fun login(request:LoginDTO): MainCompanyDTO
+
     fun getAllCompany(): List<MainCompanyDTO> // get all registered company per node
     fun getACompany(id: String): MainCompanyDTO // get a company per node
     fun createCompany(request: RegisterCompanyDTO): MainCompanyDTO // register a company on a node

@@ -1,9 +1,6 @@
 package com.aerotrax.controller
 
-import com.aerotrax.dto.ResponseDTO
-import com.aerotrax.dto.ApproveRejectConnectionDTO
-import com.aerotrax.dto.RegisterCompanyDTO
-import com.aerotrax.dto.RequestConnectionDTO
+import com.aerotrax.dto.*
 import com.aerotrax.services.CompanyService
 import com.aerotrax.webserver.NodeRPCConnection
 import javassist.NotFoundException
@@ -17,6 +14,28 @@ private const val CONTROLLER_NAME = "api/v1/company"
 @RequestMapping(CONTROLLER_NAME) // The paths for HTTP requests are relative to this base path.
 class CompanyController(private val companyService: CompanyService, private val rpcConnection: NodeRPCConnection) : BaseController()
 {
+
+    /**
+     * Login
+     */
+
+    @GetMapping(value = ["/request"], produces = ["application/json"])
+    private fun login(@RequestBody request: LoginDTO): ResponseEntity<ResponseDTO>
+    {
+        return try
+        {
+            val response =  companyService.login(request)
+            ResponseEntity.ok(ResponseDTO(
+                    message = "Success",
+                    result = response
+            ))
+        } catch (e: Exception) {
+            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
+            val function = "companyService.login()"
+            return this.handleException(e, identity, function)
+        }
+    }
+
     /**
      * Get all company
      */

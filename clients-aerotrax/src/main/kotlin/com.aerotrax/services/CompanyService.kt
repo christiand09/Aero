@@ -27,6 +27,15 @@ class CompanyService (private val rpc: NodeRPCConnection, private val fhc: FlowH
         currentUserId = userId ?: currentUserId
     }
 
+    override fun login(request:LoginDTO): MainCompanyDTO{
+        val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states
+        val myCompany = companyState.find { it.state.data.email == request.userName && it.state.data.password == request.password }
+                ?: throw NotFoundException("Wrong credentials.")
+
+        return mapToMainCompanyDTO(myCompany.state.data)
+
+    }
+
     override fun getAllCompany(): List<MainCompanyDTO>
     {
         val companyState = rpc.proxy.vaultQuery(CompanyState::class.java).states

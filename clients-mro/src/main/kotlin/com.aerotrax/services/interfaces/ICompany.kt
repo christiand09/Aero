@@ -5,6 +5,9 @@ import com.aerotrax.dto.*
 interface ICompany
 {
 
+//    var currentUserId: String
+//    fun setCurrentUserDetails(userId: String?)
+
     fun getAllCompany(): List<MainCompanyDTO> // get all registered company per node
     fun getACompany(id: String): MainCompanyDTO // get a company per node
     fun createCompany(request: RegisterCompanyDTO): MainCompanyDTO // register a company on a node
@@ -17,7 +20,10 @@ interface ICompany
     fun getAllMyConnectionRequests(id:String): MutableList<MainConnectionWithCompanyDTO> // get all my connection request to other company
     fun getNumberCurrentConnections(id:String): String // get number of my current connection
     fun getNumberRequestConnections(id:String): String // get number of all pending connection request made by other company
-    fun sortCurrentConnection(id: String, sortType: String):  List<MainConnectionWithCompanyDTO>
+    fun sortCurrentConnection(id: String, sortType: String):  List<MainConnectionWithCompanyDTO> // sort all my current connection by sortType
+    fun sortAllRequestConnectionsFromOthers(id: String, sortType: String):  List<MainConnectionWithCompanyDTO> // sort all pending connection request made by other company by sortType
+    fun sortAllMyConnectionRequests(id: String, sortType: String):  List<MainConnectionWithCompanyDTO> // sort all my connection request to other company by sortType
+    fun getAConnection(id: String, idOfOther: String): MainParticipantDTO // get a company's details thru Participant
 //    fun sortCurrentConnection(id: String, sortType: String): List<MainParticipantDTO>
 //    fun sortCurrentConnection(id: String, sortType: String): List<MainParticipantDTO>
 

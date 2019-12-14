@@ -7,6 +7,7 @@ import net.corda.core.identity.Party
 import java.time.Instant
 
 
+
 data class RegisterCompanyDTO(
         val name: String,
         val email: String,
@@ -31,6 +32,7 @@ data class RegisterCompanyDTO(
 
 data class RequestConnectionDTO(
         val requestCompanyId: String,
+        val requestMessage: String,
         val createdBy: String
 )
 
@@ -45,6 +47,7 @@ data class MainConnectionDTO(
         val companyId: String,
         val requestCompanyId: String,
         val requestNode: String,
+        val requestMessage: String?,
         val acceptedAt: Instant?,
         val declinedAt: Instant?,
         val reason: String?,
@@ -96,6 +99,7 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
             companyId = state.companyId,
             requestCompanyId = state.requestCompanyId,
             requestNode = state.requestNode,
+            requestMessage = state.requestMessage,
             acceptedAt = state.acceptedAt,
             declinedAt = state.declinedAt,
             reason = state.reason,

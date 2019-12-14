@@ -23,7 +23,7 @@ data class RegisterProductDTO(
 
 data class MainProductDTO(val companyId: String,
                           val partName: String,
-                          val partImage: String,
+                          val partImage: String?,
                           val partNumber: String,
                           val serialNumber: String,
                           val status: String,
@@ -39,7 +39,6 @@ data class MainProductDTO(val companyId: String,
                           val updatedBy: String?,
                           val createdAt: Instant,
                           val updatedAt: Instant?,
-                          val transactionId: String,
                           val linearId: UniqueIdentifier,
                           val participants: List<AbstractParty>)
 
@@ -63,7 +62,7 @@ fun mapToMainProductDTO(state: ProductState) : MainProductDTO {
          updatedBy= state.updatedBy,
          createdAt= state.createdAt,
          updatedAt= state.updatedAt,
-         transactionId =  state.transactionId,
+
          linearId = state.linearId,
          participants =  state.participants
     )

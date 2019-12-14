@@ -6,30 +6,32 @@ import com.aerotrax.states.ParticipantState
 import net.corda.core.identity.Party
 import java.time.Instant
 
+
 data class RegisterCompanyDTO(
-         val name: String,
-         val email: String,
-         val password: String,
-         val type: String,
-         val logoImage: String?,
-         val contactNumber: String?,
-         val rate: String?,
-         val website: String?,
-         val linkedIn: String?,
-         val about: String?,
-         val location: String?,
-         val addressLine1: String?,
-         val addressLine2: String?,
-         val city: String?,
-         val state: String?,
-         val country: String?,
-         val zipCode: String?,
-         val review: String?,
-         val createdBy: String
+        val name: String,
+        val email: String,
+        val password: String,
+        val type: String,
+        val logoImage: String?,
+        val contactNumber: String?,
+        val rate: String?,
+        val website: String?,
+        val linkedIn: String?,
+        val about: String?,
+        val location: String?,
+        val addressLine1: String?,
+        val addressLine2: String?,
+        val city: String?,
+        val state: String?,
+        val country: String?,
+        val zipCode: String?,
+        val review: String?,
+        val createdBy: String
 )
 
 data class RequestConnectionDTO(
         val requestCompanyId: String,
+        val requestMessage: String,
         val createdBy: String
 )
 
@@ -44,6 +46,7 @@ data class MainConnectionDTO(
         val companyId: String,
         val requestCompanyId: String,
         val requestNode: String,
+        val requestMessage: String?,
         val acceptedAt: Instant?,
         val declinedAt: Instant?,
         val reason: String?,
@@ -86,7 +89,7 @@ fun mapToMainConnectionWithCompanyDTO(connectionState: ConnectionState, particip
             linearId = connectionState.linearId.toString(),
             participants = connectionState.participants.map { it.toString() },
             companyDetails = MainParticipantDTO(participantState.name, participantState.email,participantState.type,participantState.node,participantState.logoImage,participantState.contactNumber,participantState.rate,participantState.website,participantState.linkedIn,participantState.about,participantState.location,participantState.addressLine1,participantState.addressLine2,participantState.city,participantState.state,participantState.country,participantState.zipCode,participantState.review,participantState.linearId.toString(),participantState.participants.map { it.toString() })
-)
+    )
 }
 
 fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
@@ -95,6 +98,7 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
             companyId = state.companyId,
             requestCompanyId = state.requestCompanyId,
             requestNode = state.requestNode,
+            requestMessage = state.requestMessage,
             acceptedAt = state.acceptedAt,
             declinedAt = state.declinedAt,
             reason = state.reason,
@@ -104,7 +108,7 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
             updatedAt = state.updatedAt,
             linearId = state.linearId.toString(),
             participants = state.participants.map { it.toString() }
-        )
+    )
 }
 data class MainCompanyDTO(
         val name: String,

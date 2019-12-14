@@ -6,6 +6,11 @@ import com.aerotrax.states.ParticipantState
 import net.corda.core.identity.Party
 import java.time.Instant
 
+data class LoginDTO(
+        val userName: String,
+        val password: String
+)
+
 data class RegisterCompanyDTO(
          val name: String,
          val email: String,

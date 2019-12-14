@@ -270,7 +270,7 @@ class CompanyController(private val companyService: CompanyService, private val 
     }
 
     /**
-     * Sort
+     * Sort all my current connection by sortType
      */
 
     @GetMapping(value = ["/connections/sorted/{id}"], produces = ["application/json"])
@@ -286,6 +286,69 @@ class CompanyController(private val companyService: CompanyService, private val 
         } catch (e: Exception) {
             val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
             val function = "companyService.sortCurrentConnection()"
+            return this.handleException(e, identity, function)
+        }
+    }
+
+    /**
+     * Sort all pending connection request made by other company by sortType
+     */
+
+    @GetMapping(value = ["/connections/requests/sorted/{id}"], produces = ["application/json"])
+    private fun sortAllRequestConnectionsFromOthers(@RequestHeader id: String, @RequestBody sortType: String): ResponseEntity<ResponseDTO>
+    {
+        return try
+        {
+            val response = companyService.sortAllRequestConnectionsFromOthers(id, sortType)
+            ResponseEntity.ok(ResponseDTO(
+                    message = "Success",
+                    result = response
+            ))
+        } catch (e: Exception) {
+            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
+            val function = "companyService.sortAllRequestConnectionsFromOthers()"
+            return this.handleException(e, identity, function)
+        }
+    }
+
+    /**
+     * Sort all my connection request to other company by sortType
+     */
+
+    @GetMapping(value = ["/connections/myRequests/sorted/{id}"], produces = ["application/json"])
+    private fun sortAllMyConnectionRequests(@RequestHeader id: String, @RequestBody sortType: String): ResponseEntity<ResponseDTO>
+    {
+        return try
+        {
+            val response = companyService.sortAllMyConnectionRequests(id, sortType)
+            ResponseEntity.ok(ResponseDTO(
+                    message = "Success",
+                    result = response
+            ))
+        } catch (e: Exception) {
+            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
+            val function = "companyService.sortAllMyConnectionRequests()"
+            return this.handleException(e, identity, function)
+        }
+    }
+
+    /**
+     * Sort all my connection request to other company by sortType
+     */
+
+    @GetMapping(value = ["/connections/{idOfOther}"], produces = ["application/json"])
+    private fun getAConnection(@RequestHeader id: String, @RequestBody idOfOther: String): ResponseEntity<ResponseDTO>
+    {
+        return try
+        {
+            val response = companyService.getAConnection(id, idOfOther)
+            ResponseEntity.ok(ResponseDTO(
+                    message = "Success",
+                    result = response
+            ))
+        } catch (e: Exception) {
+            val identity = rpcConnection.proxy.nodeInfo().legalIdentities.toString()
+            val function = "companyService.getAConnection()"
             return this.handleException(e, identity, function)
         }
     }
