@@ -10,12 +10,13 @@ import com.aerotrax.services.interfaces.IProduct
 import com.aerotrax.util.AppConstants
 import com.aerotrax.util.FlowHandlerCompletion
 import com.aerotrax.util.Functions
+import com.aerotrax.webserver.NodeRPCConnection
 import javassist.NotFoundException
 import org.springframework.stereotype.Service
 
 
 @Service
-class ProductService (private val fhc: FlowHandlerCompletion, private val state: Functions): IProduct {
+class ProductService (private val rpc: NodeRPCConnection, private val fhc: FlowHandlerCompletion, private val state: Functions): IProduct {
 
     override var currentCompanyId: String = AppConstants.DEFAULT_COMPANY_ID
 
@@ -36,9 +37,9 @@ class ProductService (private val fhc: FlowHandlerCompletion, private val state:
 
     override fun createProduct(request: RegisterProductFlowDTO): MainProductDTO {
 
-        val registerProductFlowReturn = state.flow(
+        val registerProductFlowReturn = rpc.proxy.startFlowDynamic(
                 RegisterProductFlow::class.java,
-                currentCompanyId,
+                request.companyId,
                 request.partName,
                 request.partImage,
                 request.partNumber,
@@ -52,7 +53,7 @@ class ProductService (private val fhc: FlowHandlerCompletion, private val state:
         val productState = state.returnProductState(registerProductFlowReturn)
 
         request.partDetails.map {detail ->
-            val registerPartDetailFlowReturn = state.flow(
+            val registerPartDetailFlowReturn = rpc.proxy.startFlowDynamic(
                     RegisterPartDetailFlow::class.java,
                     productState.linearId.toString(),
                     request.createdBy,
@@ -64,7 +65,7 @@ class ProductService (private val fhc: FlowHandlerCompletion, private val state:
         }
 
         request.CMMTitle.map {title ->
-            val registerCMMFlowReturn = state.flow(
+            val registerCMMFlowReturn = rpc.proxy.startFlowDynamic(
                     RegisterCMMFlow::class.java,
                     productState.linearId.toString(),
                     title,

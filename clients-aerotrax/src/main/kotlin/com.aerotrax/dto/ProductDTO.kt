@@ -6,7 +6,7 @@ import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.Party
 import java.time.Instant
 
-data class RegisterProductFlowDTO @JsonCreator constructor(
+data class RegisterProductFlowDTO(
         val companyId: String,
         val partName: String,
         val partImage: String?,
@@ -45,8 +45,8 @@ data class MainProductDTO(
         val updatedBy: String?,
         val createdAt: Instant,
         val updatedAt: Instant?,
-        val linearId: UniqueIdentifier,
-        val participants: List<Party>
+        val linearId: String,
+        val participants: List<String>
 )
 
 fun mapToMainProductDTO(state: ProductState) : MainProductDTO {
@@ -69,7 +69,7 @@ fun mapToMainProductDTO(state: ProductState) : MainProductDTO {
          updatedBy= state.updatedBy,
          createdAt= state.createdAt,
          updatedAt= state.updatedAt,
-         linearId = state.linearId,
-         participants =  state.participants
+         linearId = state.linearId.toString(),
+         participants =  state.participants.map { it.toString() }
     )
 }

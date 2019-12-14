@@ -2,7 +2,6 @@ package com.aerotrax.controller
 
 import com.aerotrax.dto.RegisterProductFlowDTO
 import com.aerotrax.dto.ResponseDTO
-import com.aerotrax.services.CompanyService
 import com.aerotrax.services.ProductService
 import com.aerotrax.webserver.NodeRPCConnection
 import org.springframework.http.HttpHeaders
@@ -32,10 +31,9 @@ class ProductController(private val productService: ProductService, private val 
         }
     }
 
-    @PostMapping(value = ["/product"], produces = ["application/json"])
-    private fun createProduct(@RequestHeader headers: HttpHeaders, @RequestBody request: RegisterProductFlowDTO): ResponseEntity<ResponseDTO> {
+    @PostMapping(value = [], produces = ["application/json"])
+    private fun createProduct(@RequestBody request: RegisterProductFlowDTO): ResponseEntity<ResponseDTO> {
         return try {
-            productService.setCurrentCompanyDetails(getUserUID(headers))
             val response = productService.createProduct(request)
             ResponseEntity.ok(ResponseDTO(
                     message = "Success",
