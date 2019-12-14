@@ -2,10 +2,12 @@ package com.aerotrax.services
 
 import com.aerotrax.dto.AddDocumentFlowDTO
 import com.aerotrax.dto.MainDocumentDTO
+import com.aerotrax.dto.mapToMainCompanyDTO
 import com.aerotrax.dto.mapToMainDocumentDTO
 import com.aerotrax.flows.document.AddNewDocumentFlow
 import com.aerotrax.flows.product.RegisterPartDetailFlow
 import com.aerotrax.services.interfaces.IDocument
+import com.aerotrax.states.CompanyState
 import com.aerotrax.states.DocumentState
 import com.aerotrax.util.AppConstants
 import com.aerotrax.util.FlowHandlerCompletion
@@ -99,6 +101,21 @@ class DocumentService (private val rpc: NodeRPCConnection, private val fhc: Flow
             state.returnDocumentState(addNewDocumentFlowReturn)
         }
         return mapToMainDocumentDTO(documentState)
+    }
+
+    override fun getDocumentImage(linearId: String): String? {
+        val com = get(linearId) as MainDocumentDTO
+        if(com.name.isNullOrEmpty())
+            throw CordaException("Company image not found")
+        return com.name
+    }
+
+    override fun get(linearId: String): Any {
+        val documentStateRef = state.documentState()
+        val documentState = documentStateRef.find { stateAndRef ->
+            stateAndRef.state.data.companyId == linearId
+        } ?: throw CordaException("Company not found")
+        return mapToMainDocumentDTO(documentState.state.data)
     }
 
 }

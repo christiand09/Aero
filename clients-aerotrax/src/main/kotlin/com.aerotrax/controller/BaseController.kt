@@ -62,5 +62,16 @@ abstract class BaseController
             ))
         }
     }
+
+    fun handleExceptionRender(ex: Exception) : ResponseEntity<Any> {
+        logger.error(ex.printStackTrace().toString())
+        return when (ex) {
+//            is UnauthorizedException -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.message.toString())
+            is NotFoundException -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message.toString())
+            is TransactionVerificationException -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.localizedMessage.toString())
+//            is MailerException -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("Mailer failed to send, error: %s", ex.message.toString()))
+            else -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("Action has failed, error: %s", ex.message.toString()))
+        }
+    }
 }
 
