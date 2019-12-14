@@ -4,6 +4,7 @@ import com.aerotrax.dto.ResponseDTO
 import com.aerotrax.dto.ApproveRejectConnectionDTO
 import com.aerotrax.dto.RegisterCompanyDTO
 import com.aerotrax.dto.RequestConnectionDTO
+import com.aerotrax.services.CompanyService
 import com.aerotrax.webserver.NodeRPCConnection
 import javassist.NotFoundException
 import org.springframework.http.ResponseEntity
