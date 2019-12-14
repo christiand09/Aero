@@ -1,4 +1,4 @@
-package com.aerotrax.states;
+package com.aerotrax.states
 
 import com.aerotrax.contracts.CompanyContract
 import net.corda.core.contracts.BelongsToContract

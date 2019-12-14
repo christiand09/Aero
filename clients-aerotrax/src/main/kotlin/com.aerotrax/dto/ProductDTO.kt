@@ -1,47 +1,53 @@
 package com.aerotrax.dto
 
 import com.aerotrax.states.ProductState
+import com.fasterxml.jackson.annotation.JsonCreator
 import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.identity.AbstractParty
+import net.corda.core.identity.Party
 import java.time.Instant
 
-data class RegisterProductDTO(
-         val companyId: String,
-         val partName: String,
-         val partImage: String,
-         val partNumber: String,
-         val serialNumber: String,
-         val status: String,
-         val category: String,
-         val manufacturer: String,
-         val CMMTitle: String,
-//        private val CMMStatus: String?,
-         val createdBy: String,
-         val transactionId: String,
-         val linearId: String
+data class RegisterProductFlowDTO @JsonCreator constructor(
+        val companyId: String,
+        val partName: String,
+        val partImage: String?,
+        val partNumber: String,
+        val serialNumber: String,
+        val status: String,
+        val category: String,
+        val manufacturer: String,
+        val createdBy: String,
+        val partDetails: List<PartDetail>,
+        val CMMTitle: List<String>
 )
 
-data class MainProductDTO(val companyId: String,
-                          val partName: String,
-                          val partImage: String,
-                          val partNumber: String,
-                          val serialNumber: String,
-                          val status: String,
-                          val category: String,
-                          val manufacturer: String,
-                          val registeredOwner: String,
-                          val newOwner: String?,
-                          val partAvailability: String,
-                          val views: Int?,
-                          val rate: Int?,
-                          val dealBit: Boolean?,
-                          val createdBy: String,
-                          val updatedBy: String?,
-                          val createdAt: Instant,
-                          val updatedAt: Instant?,
-                          val transactionId: String,
-                          val linearId: UniqueIdentifier,
-                          val participants: List<AbstractParty>)
+data class PartDetail (
+        val title: String,
+        val value: String?,
+        val unit: String
+)
+
+data class MainProductDTO(
+        val companyId: String,
+        val partName: String,
+        val partImage: String?,
+        val partNumber: String,
+        val serialNumber: String,
+        val status: String,
+        val category: String,
+        val manufacturer: String,
+        val registeredOwner: String,
+        val newOwner: String?,
+        val partAvailability: String,
+        val views: Int?,
+        val rate: Int?,
+        val dealBit: Boolean?,
+        val createdBy: String,
+        val updatedBy: String?,
+        val createdAt: Instant,
+        val updatedAt: Instant?,
+        val linearId: UniqueIdentifier,
+        val participants: List<Party>
+)
 
 fun mapToMainProductDTO(state: ProductState) : MainProductDTO {
     return MainProductDTO(
@@ -63,7 +69,6 @@ fun mapToMainProductDTO(state: ProductState) : MainProductDTO {
          updatedBy= state.updatedBy,
          createdAt= state.createdAt,
          updatedAt= state.updatedAt,
-         transactionId =  state.transactionId,
          linearId = state.linearId,
          participants =  state.participants
     )
