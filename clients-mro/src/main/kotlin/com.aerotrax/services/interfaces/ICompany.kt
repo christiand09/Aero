@@ -4,16 +4,20 @@ import com.aerotrax.dto.*
 
 interface ICompany
 {
-    fun getAllCompany(): List<MainCompanyDTO>
-    fun getACompany(id: String): MainCompanyDTO
-    fun createCompany(request: RegisterCompanyDTO): MainCompanyDTO
-    fun requestConnection(id: String, request: RequestConnectionDTO): MainConnectionDTO
-    fun approveRejectConnection(id: String, request: ApproveRejectConnectionDTO): MainConnectionDTO
-    fun searchAllConnections(searchText: String?): List<MainCompanyDTO>
-    fun getAllParticipants(): List<MainParticipantDTO>
-    fun getAllConnections(id:String): MutableList<MainConnectionWithCompanyDTO>
-    fun getAllRequestConnectionsFromOthers(id:String): MutableList<MainConnectionWithCompanyDTO>  // list of all the connections requested by other party
-    fun getAllMyConnectionRequests(id:String): MutableList<MainConnectionWithCompanyDTO> // list of all my request of connection to other party
+
+    fun getAllCompany(): List<MainCompanyDTO> // get all registered company per node
+    fun getACompany(id: String): MainCompanyDTO // get a company per node
+    fun createCompany(request: RegisterCompanyDTO): MainCompanyDTO // register a company on a node
+    fun requestConnection(id: String, request: RequestConnectionDTO): MainConnectionDTO // request a connection to a company
+    fun approveRejectConnection(id: String, request: ApproveRejectConnectionDTO): MainConnectionDTO // approve/reject a pending connection request of a company
+    fun searchAllAvailableConnections(searchText: String?): List<MainParticipantDTO> // search all connections
+    fun getAllParticipants(): List<MainParticipantDTO> // get all registered companies
+    fun getAllConnections(id:String): MutableList<MainConnectionWithCompanyDTO> // get all my current connections
+    fun getAllRequestConnectionsFromOthers(id:String): MutableList<MainConnectionWithCompanyDTO>  // get all pending connection request made by other company
+    fun getAllMyConnectionRequests(id:String): MutableList<MainConnectionWithCompanyDTO> // get all my connection request to other company
+    fun getNumberCurrentConnections(id:String): String // get number of my current connection
+    fun getNumberRequestConnections(id:String): String // get number of all pending connection request made by other company
+    fun sortCurrentConnection(id: String, sortType: String): List<MainParticipantDTO>
 //    fun getAllRequestingConnections(id:String): List<MainCompanyDTO>
 //    fun getCurrentByFaveConnections(): List<MainCompanyDTO>
 }

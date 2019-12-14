@@ -6,6 +6,7 @@ import com.aerotrax.states.ParticipantState
 import net.corda.core.identity.Party
 import java.time.Instant
 
+
 data class RegisterCompanyDTO(
         val name: String,
         val email: String,
@@ -34,6 +35,7 @@ data class RequestConnectionDTO(
 )
 
 data class ApproveRejectConnectionDTO(
+
         val approveReject: Boolean,
         val reason: String?,
         val createdBy: String
