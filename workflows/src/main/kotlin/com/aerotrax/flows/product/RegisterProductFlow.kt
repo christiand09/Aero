@@ -18,14 +18,13 @@ import java.time.Instant
 class RegisterProductFlow (
         private val companyId: String,
         private val partName: String,
-        private val partImage: String,
+        private val partImage: String?,
         private val partNumber: String,
         private val serialNumber: String,
         private val status: String,
         private val category: String,
         private val manufacturer: String,
-        private val createdBy: String,
-        private val transactionId: String
+        private val createdBy: String
 ): FlowFunctions() {
 
     @Suspendable
@@ -57,7 +56,6 @@ class RegisterProductFlow (
                 updatedBy = null,
                 createdAt = Instant.now(),
                 updatedAt = null,
-                transactionId = transactionId,
                 linearId = UniqueIdentifier(),
                 participants = listOf(ourIdentity)
         )

@@ -11,7 +11,7 @@ import java.time.Instant
 @BelongsToContract(ProductContract::class)
 data class ProductState(val companyId: String,
                         val partName: String,
-                        val partImage: String,
+                        val partImage: String?,
                         val partNumber: String,
                         val serialNumber: String,
                         val status: String, // new or existing
@@ -27,6 +27,5 @@ data class ProductState(val companyId: String,
                         val updatedBy: String?,
                         val createdAt: Instant,
                         val updatedAt: Instant?,
-                        val transactionId: String,
                         override val linearId: UniqueIdentifier,
                         override val participants: List<Party>): LinearState
