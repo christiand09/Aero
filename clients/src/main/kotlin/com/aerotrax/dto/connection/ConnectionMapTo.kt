@@ -18,8 +18,8 @@ fun mapToMainConnectionDTO(state: ConnectionState): MainConnectionDTO
             createdBy = state.createdBy,
             createdAt = state.createdAt,
             updatedAt = state.updatedAt,
-            linearId = state.linearId.toString(),
-            participants = state.participants.map { it.toString() }
+            linearId = state.linearId.id.toString(),
+            participants = state.participants.map { it.name.x500Principal.name.toString() }
     )
 }
 
@@ -35,8 +35,8 @@ fun mapToMainConnectionWithCompanyDTO(connectionState: ConnectionState, particip
             createdBy = connectionState.createdBy,
             createdAt = connectionState.createdAt,
             updatedAt = connectionState.updatedAt,
-            linearId = connectionState.linearId.toString(),
-            participants = connectionState.participants.map { it.toString() },
+            linearId = connectionState.linearId.id.toString(),
+            participants = connectionState.participants.map { it.name.x500Principal.name.toString() },
             companyDetails = MainParticipantDTO(
                     participantState.name,
                     participantState.email,
@@ -56,8 +56,8 @@ fun mapToMainConnectionWithCompanyDTO(connectionState: ConnectionState, particip
                     participantState.country,
                     participantState.zipCode,
                     participantState.review,
-                    participantState.linearId.toString(),
-                    participantState.participants.map { it.toString() }
+                    participantState.linearId.id.toString(),
+                    participantState.participants.map { it.name.x500Principal.name.toString() }
             )
     )
 }

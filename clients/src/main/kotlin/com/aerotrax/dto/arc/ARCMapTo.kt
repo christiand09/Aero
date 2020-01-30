@@ -16,6 +16,6 @@ fun mapToMainARCDTO(state: ARCState) : MainARCDTO{
             createdBy = state.createdBy,
             createdAt = state.createdAt,
             updatedAt = state.updatedAt,
-            linearId = state.linearId.toString()
+            linearId = state.linearId.id.toString()
     )
 }

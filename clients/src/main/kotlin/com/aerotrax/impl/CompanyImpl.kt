@@ -43,7 +43,7 @@ class CompanyImpl (private val rpc: NodeRPCConnection,
             } ?: throw NotFoundException("Wrong credentials.")
 
             response.successfulResponse(
-                    response = myCompany,
+                    response = mapToMainCompanyDTO(myCompany.state.data),
                     message = "login"
             )
         } catch (ex: Exception){
@@ -83,7 +83,7 @@ class CompanyImpl (private val rpc: NodeRPCConnection,
             } ?: throw NotFoundException("Wrong id: $id.")
 
             response.successfulResponse(
-                    response = companyData,
+                    response = mapToMainCompanyDTO(companyData.state.data),
                     message = "get the company data"
             )
         } catch (ex: Exception){
@@ -148,7 +148,7 @@ class CompanyImpl (private val rpc: NodeRPCConnection,
             fhc.handlerCompletion(flowParticipantReturn)
 
             response.successfulResponse(
-                    response = flowCompanyResult,
+                    response = mapToMainCompanyDTO(flowCompanyResult),
                     message = "get the company data"
             )
         } catch (ex: Exception){
@@ -171,10 +171,10 @@ class CompanyImpl (private val rpc: NodeRPCConnection,
                     request.createdBy
             )
             fhc.handlerCompletion(flowConnectionReturn)
-            val flowCompanyResult = function.returnConnectionState(flowConnectionReturn)
+            val flowConnectionResult = function.returnConnectionState(flowConnectionReturn)
 
             response.successfulResponse(
-                    response = flowCompanyResult,
+                    response = mapToMainConnectionDTO(flowConnectionResult),
                     message = "request connection"
             )
         } catch (ex: Exception){
@@ -197,10 +197,10 @@ class CompanyImpl (private val rpc: NodeRPCConnection,
                     request.createdBy
             )
             fhc.handlerCompletion(flowConnectionReturn)
-            val flowCompanyResult = function.returnConnectionState(flowConnectionReturn)
+            val flowConnectionResult = function.returnConnectionState(flowConnectionReturn)
 
             response.successfulResponse(
-                    response = flowCompanyResult,
+                    response = mapToMainConnectionDTO(flowConnectionResult),
                     message = "request connection"
             )
         } catch (ex: Exception){

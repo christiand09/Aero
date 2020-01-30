@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
-class Response() {
+class Response {
     fun successfulResponse(response: Any, message: String): ResponseEntity<ResponseDTO> {
         return ResponseEntity.ok(
                 ResponseDTO(
@@ -19,7 +19,7 @@ class Response() {
     }
 
     fun failedResponse(exception: Exception, message: String): ResponseEntity<ResponseDTO> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+        return ResponseEntity.badRequest().body(
                 ResponseDTO(
                         status = "failed",
                         message = "$message failed",

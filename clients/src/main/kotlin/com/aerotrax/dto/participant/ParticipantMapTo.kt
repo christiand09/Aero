@@ -22,7 +22,7 @@ fun mapToMainParticipantDTO(state: ParticipantState) : MainParticipantDTO {
             country= state.country,
             zipCode= state.zipCode,
             review =  state.review,
-            linearId = state.linearId.toString(),
-            participants = state.participants.map { it.toString() }
+            linearId = state.linearId.id.toString(),
+            participants = state.participants.map { it.name.x500Principal.name.toString() }
     )
 }

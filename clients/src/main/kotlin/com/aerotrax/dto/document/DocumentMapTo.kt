@@ -15,6 +15,6 @@ fun mapToMainDocumentDTO(state: DocumentState) : MainDocumentDTO{
             uploadedBy = state.uploadedBy,
             uploadedAt = state.uploadedAt,
             updatedAt = state.updatedAt,
-            linearId = state.linearId.toString()
+            linearId = state.linearId.id.toString()
     )
 }

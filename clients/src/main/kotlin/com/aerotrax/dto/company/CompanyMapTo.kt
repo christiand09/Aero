@@ -26,7 +26,7 @@ fun mapToMainCompanyDTO(state: CompanyState) : MainCompanyDTO {
             createdBy = state.createdBy,
             createdAt =  state.createdAt,
             updatedAt = state.updatedAt,
-            linearId = state.linearId.toString(),
-            participants = state.participants.map { it.toString() }
+            linearId = state.linearId.id.toString(),
+            participants = state.participants.map { it.name.x500Principal.name.toString() }
     )
 }

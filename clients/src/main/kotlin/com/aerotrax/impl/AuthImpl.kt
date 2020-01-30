@@ -1,6 +1,7 @@
 package com.aerotrax.impl
 
 import com.aerotrax.dto.ResponseDTO
+import com.aerotrax.dto.company.mapToMainCompanyDTO
 import com.aerotrax.flows.company.AddNewParticipantFlow
 import com.aerotrax.flows.company.RegisterCompanyFlow
 import com.aerotrax.service.AuthService
@@ -99,7 +100,7 @@ class AuthImpl (private val rpc: NodeRPCConnection,
             fhc.handlerCompletion(flowParticipantReturn)
 
             response.successfulResponse(
-                    response = flowResult,
+                    response = mapToMainCompanyDTO(flowResult),
                     message = "seed company data"
             )
         } catch (ex: Exception){
