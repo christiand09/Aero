@@ -24,7 +24,10 @@ buildscript {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven {
+            url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases'
+            uri 'https://plugins.gradle.org/m2/'
+        }
     }
 
     dependencies {
@@ -33,6 +36,7 @@ buildscript {
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_gradle_plugin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61"
 
     }
 }
@@ -68,6 +72,7 @@ allprojects {
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: 'org.jetbrains.kotlin.jvm'
 
 sourceSets {
     main {
@@ -119,7 +124,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         }
     }
     node {
-        name "O=PartyA,L=London,C=GB"
+        name "O=Aerotrax,L=London,C=GB"
         p2pPort 10005
         rpcSettings {
             address("localhost:10006")
@@ -128,11 +133,29 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
-        name "O=PartyB,L=New York,C=US"
+        name "O=MRO,L=New York,C=US"
         p2pPort 10008
         rpcSettings {
             address("localhost:10009")
             adminAddress("localhost:10049")
+        }
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+    node {
+        name "O=OEM,L=New York,C=US"
+        p2pPort 10011
+        rpcSettings {
+            address("localhost:10012")
+            adminAddress("localhost:10052")
+        }
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+    node {
+        name "O=Airline1,L=New York,C=US"
+        p2pPort 10014
+        rpcSettings {
+            address("localhost:10015")
+            adminAddress("localhost:10055")
         }
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
