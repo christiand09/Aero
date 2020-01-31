@@ -3,9 +3,7 @@ package com.aerotrax.impl
 import com.aerotrax.dto.ResponseDTO
 import com.aerotrax.dto.company.RegisterCompanyDTO
 import com.aerotrax.dto.company.mapToMainCompanyDTO
-import com.aerotrax.dto.connection.ApproveRejectConnectionDTO
-import com.aerotrax.dto.connection.RequestConnectionDTO
-import com.aerotrax.dto.connection.mapToMainConnectionDTO
+import com.aerotrax.dto.connection.*
 import com.aerotrax.dto.login.LoginDTO
 import com.aerotrax.dto.participant.MainParticipantDTO
 import com.aerotrax.dto.participant.mapToMainParticipantDTO
@@ -21,6 +19,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RestController
+import java.lang.IllegalArgumentException
 
 @Service
 class CompanyImpl (private val rpc: NodeRPCConnection,
@@ -281,35 +280,301 @@ class CompanyImpl (private val rpc: NodeRPCConnection,
     }
 
     override fun getAllRequestConnectionsFromOthers(id: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return try {
+
+            val connectionState = function.connectionState()
+            val myConnection =  connectionState.filter {
+                it.state.data.requestCompanyId == id && it.state.data.acceptedAt == null
+            }
+            if (myConnection.isEmpty()) throw IllegalArgumentException("You do not have any request connections yet")
+
+            val list = mutableListOf<MainConnectionWithCompanyDTO>()
+
+            val participantState = function.participantState()
+            myConnection.map { connect ->
+                val myParticipants = participantState.find {
+                    it.state.data.linearId.toString() == connect.state.data.companyId
+                } ?:throw NotFoundException("Participant not found.")
+                list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+            }
+
+            response.successfulResponse(
+                    response = list,
+                    message = "get all the request connections by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "get all the request connections by Id: $id"
+            )
+        }
     }
 
     override fun getAllMyConnectionRequests(id: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return try {
+
+            val connectionState = function.connectionState()
+            val myConnection =  connectionState.filter {
+                it.state.data.requestCompanyId == id && it.state.data.acceptedAt == null
+            }
+            if (myConnection.isEmpty()) throw IllegalArgumentException("You do not have any request connections yet")
+
+            val list = mutableListOf<MainConnectionWithCompanyDTO>()
+
+            val participantState = function.participantState()
+            myConnection.map { connect ->
+                val myParticipants = participantState.find { it.state.data.linearId.toString() == connect.state.data.requestCompanyId }
+                        ?:throw NotFoundException("Participant not found.")
+                list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+            }
+
+            response.successfulResponse(
+                    response = list,
+                    message = "get all the request connections by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "get all the request connections by Id: $id"
+            )
+        }
     }
 
     override fun getNumberCurrentConnections(id: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return try {
+
+        val connectionState = function.connectionState()
+        val myConnection =  connectionState.filter {
+            (it.state.data.companyId == id || it.state.data.requestCompanyId == id)
+                    && it.state.data.acceptedAt != null
+        }
+        if (myConnection.isEmpty()) throw IllegalArgumentException("You do not have any connections yet")
+        val number = myConnection.size.toString()
+
+            response.successfulResponse(
+                    response = number,
+                    message = "get the number of a current connection by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "get the number of a current connection by Id: $id"
+            )
+        }
     }
 
     override fun getNumberRequestConnections(id: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return try {
+
+            val connectionState = function.connectionState()
+            val myConnection =  connectionState.filter {
+                (it.state.data.requestCompanyId == id) && it.state.data.acceptedAt == null
+            }
+            if (myConnection.isEmpty()) throw IllegalArgumentException("You do not have any request connections yet")
+            val number = myConnection.size.toString()
+
+            response.successfulResponse(
+                    response = number,
+                    message = "get the number of a request connection by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "get the number of a request connection by Id: $id"
+            )
+        }
     }
 
     override fun sortCurrentConnection(id: String, sortType: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return try {
+
+            val connectionState = function.connectionState()
+            val myConnection =  connectionState.filter {
+                (it.state.data.companyId == id || it.state.data.requestCompanyId == id)
+                        && it.state.data.acceptedAt != null
+            }
+            if (myConnection.isEmpty()) throw IllegalArgumentException("You do not have any connections yet")
+
+            val list = mutableListOf<MainConnectionWithCompanyDTO>()
+
+            val participantState = function.participantState()
+
+            myConnection.map { connect ->
+                if (connect.state.data.companyId == id){
+                    val myParticipants = participantState.find {
+                        it.state.data.linearId.toString() == connect.state.data.requestCompanyId
+                    } ?:throw NotFoundException("Participant not found.")
+
+                    list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+                }
+                else{
+                    val myParticipants = participantState.find {
+                        it.state.data.linearId.toString() == connect.state.data.companyId
+                    } ?:throw NotFoundException("Participant not found.")
+
+                    list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+                }
+                when {
+                    sortType.contains("AZ", true) -> {
+                        list.sortedWith(compareBy { it.companyDetails.name })
+                    }
+                    sortType.contains("ZA", true) -> {
+                        list.sortedByDescending { it.companyDetails.name }
+                    }
+                    sortType.contains("date", true) -> {
+                        list.sortedWith(compareBy { it.acceptedAt })
+                    }
+                    else -> {
+                        list
+                    }
+                }
+            }
+            response.successfulResponse(
+                    response = list,
+                    message = "sort the current connections by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "sort the current connections by Id: $id"
+            )
+        }
     }
 
     override fun sortAllRequestConnectionsFromOthers(id: String, sortType: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return try {
+
+            val connectionState = function.connectionState()
+            val myConnection =  connectionState.filter {
+                (it.state.data.requestCompanyId == id) && it.state.data.acceptedAt == null
+            }
+            if (myConnection.isEmpty()) throw IllegalArgumentException("You do not have any connections yet")
+
+            val list = mutableListOf<MainConnectionWithCompanyDTO>()
+
+            val participantState = function.participantState()
+
+            myConnection.map { connect ->
+                if (connect.state.data.companyId == id){
+                    val myParticipants = participantState.find {
+                        it.state.data.linearId.toString() == connect.state.data.requestCompanyId
+                    } ?:throw NotFoundException("Participant not found.")
+
+                    list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+                }
+                else{
+                    val myParticipants = participantState.find {
+                        it.state.data.linearId.toString() == connect.state.data.companyId
+                    } ?:throw NotFoundException("Participant not found.")
+
+                    list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+                }
+                when {
+                    sortType.contains("AZ", true) -> {
+                        list.sortedWith(compareBy { it.companyDetails.name })
+                    }
+                    sortType.contains("ZA", true) -> {
+                        list.sortedByDescending { it.companyDetails.name }
+                    }
+                    sortType.contains("date", true) -> {
+                        list.sortedWith(compareBy { it.acceptedAt })
+                    }
+                    else -> {
+                        list
+                    }
+                }
+            }
+            response.successfulResponse(
+                    response = list,
+                    message = "sort all the request connections by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "sort all the request connections by Id: $id"
+            )
+        }
     }
 
     override fun sortAllMyConnectionRequests(id: String, sortType: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return try {
+
+            val connectionState = function.connectionState()
+            val myConnection =  connectionState.filter {
+                (it.state.data.companyId == id) && it.state.data.acceptedAt == null
+            }
+            if (myConnection.isEmpty()) throw IllegalArgumentException("You do not have any connections yet")
+
+            val list = mutableListOf<MainConnectionWithCompanyDTO>()
+
+            val participantState = function.participantState()
+
+            myConnection.map { connect ->
+                if (connect.state.data.companyId == id){
+                    val myParticipants = participantState.find {
+                        it.state.data.linearId.toString() == connect.state.data.requestCompanyId
+                    } ?:throw NotFoundException("Participant not found.")
+
+                    list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+                }
+                else{
+                    val myParticipants = participantState.find {
+                        it.state.data.linearId.toString() == connect.state.data.companyId
+                    } ?:throw NotFoundException("Participant not found.")
+
+                    list.add(mapToMainConnectionWithCompanyDTO(connect.state.data, myParticipants.state.data))
+                }
+                when {
+                    sortType.contains("AZ", true) -> {
+                        list.sortedWith(compareBy { it.companyDetails.name })
+                    }
+                    sortType.contains("ZA", true) -> {
+                        list.sortedByDescending { it.companyDetails.name }
+                    }
+                    sortType.contains("date", true) -> {
+                        list.sortedWith(compareBy { it.acceptedAt })
+                    }
+                    else -> {
+                        list
+                    }
+                }
+            }
+            response.successfulResponse(
+                    response = list,
+                    message = "sort all my request connections by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "sort all my request connections by Id: $id"
+            )
+        }
     }
 
     override fun getAConnection(id: String, idOfOther: String): ResponseEntity<ResponseDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return try {
+
+            val participantState = function.participantState()
+            val myParticipant =  participantState.map { it }.find { (it.state.data.linearId.toString() == idOfOther) }
+                    ?: throw IllegalArgumentException("Company Not Found")
+
+            response.successfulResponse(
+                    response = mapToMainParticipantDTO(myParticipant.state.data),
+                    message = "get a connection by Id: $id"
+            )
+        } catch (ex: Exception){
+            response.failedResponse(
+                    exception = ex,
+                    message = "get a connection by Id: $id"
+            )
+        }
     }
 
 
