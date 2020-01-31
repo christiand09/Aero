@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile
 interface DocumentService {
 
     /** upload a file using spring boot **/
-    fun uploadFile(file: MultipartFile, folderPath: String, linearId: String): ResponseEntity<ResponseDTO>
+    fun uploadFile(file: MultipartFile, folderType: String, linearId: String): ResponseEntity<ResponseDTO>
 
     /** get document image **/
     fun getDocumentImage(linearId: String): ResponseEntity<ResponseDTO>
