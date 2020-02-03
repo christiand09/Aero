@@ -42,29 +42,29 @@ class AuthImpl (private val rpc: NodeRPCConnection,
             val myIdentity = rpc.proxy.nodeInfo().legalIdentities.single().name.toString()
             lateinit var state: CompanyState
 
-            when {
-                name.equals("aerotraxlocal", true) -> {
+            when (name){
+                "aerotraxlocal" -> {
                     if (myIdentity == LOCAL_NODE_AEROTRAX) state = aerotraxInfo("aerotraxlocal") else throw IllegalArgumentException("Incorrect Node")
                 }
-                name.equals("airline1local", true) -> {
+                "airline1local" -> {
                     if (myIdentity == LOCAL_NODE_AIRLINE1) state = americanAirlineInfo("airline1local") else throw IllegalArgumentException("Incorrect Node")
                 }
-                name.equals("mrolocal", true) -> {
+                "mrolocal" -> {
                     if (myIdentity == LOCAL_NODE_MRO) state = mroInfo("mrolocal") else throw IllegalArgumentException("Incorrect Node")
                 }
-                name.equals("oemlocal", true) -> {
+                "oemlocal" -> {
                     if (myIdentity == LOCAL_NODE_OEM) state = oemInfo("oemlocal") else throw IllegalArgumentException("Incorrect Node")
                 }
-                name.equals("aerotrax", true) -> {
+                "aerotrax" -> {
                     if (myIdentity == SERVER_NODE_AEROTRAX) state = aerotraxInfo("aerotrax") else throw IllegalArgumentException("Incorrect Node")
                 }
-                name.equals("airline1", true) -> {
+                "airline1" -> {
                     if (myIdentity == SERVER_NODE_AIRLINE1) state = americanAirlineInfo("airline1") else throw IllegalArgumentException("Incorrect Node")
                 }
-                name.equals("mro", true) -> {
+                "mro" -> {
                     if (myIdentity == SERVER_NODE_MRO) state = mroInfo("mro") else throw IllegalArgumentException("Incorrect Node")
                 }
-                name.equals("oem", true) -> {
+                "oem" -> {
                     if (myIdentity == SERVER_NODE_OEM) state = oemInfo("oem") else throw IllegalArgumentException("Incorrect Node")
                 }
                 else -> {
