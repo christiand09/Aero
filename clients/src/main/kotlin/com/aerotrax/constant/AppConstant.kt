@@ -16,5 +16,15 @@ class AppConstants {
         /** file storage path local **/
         const val FILE_STORAGE_PATH_LOCAL = "C:\\Users\\joyce.mamac\\Desktop\\Aero\\clients-aerotrax"
 
+        const val LOCAL_NODE_AEROTRAX = "O=Aerotrax, L=London, C=GB"
+        const val LOCAL_NODE_AIRLINE1 = "O=Airline1, L=London, C=GB"
+        const val LOCAL_NODE_MRO = "O=MRO, L=London, C=GB"
+        const val LOCAL_NODE_OEM = "O=OEM, L=London, C=GB"
+
+        const val SERVER_NODE_AEROTRAX = "O=qwe, L=London, C=GB"
+        const val SERVER_NODE_AIRLINE1 = "O=asd, L=London, C=GB"
+        const val SERVER_NODE_MRO = "O=zxc, L=London, C=GB"
+        const val SERVER_NODE_OEM = "O=iop, L=London, C=GB"
+
     }
 }

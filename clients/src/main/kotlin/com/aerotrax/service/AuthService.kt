@@ -6,6 +6,6 @@ import org.springframework.http.ResponseEntity
 interface AuthService {
 
     /** seed data **/
-    fun seedCompany(): ResponseEntity<ResponseDTO>
+    fun seedCompany(name: String): ResponseEntity<ResponseDTO>
 
 }

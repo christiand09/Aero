@@ -7,7 +7,6 @@ import com.aerotrax.dto.connection.RequestConnectionDTO
 import com.aerotrax.dto.login.LoginDTO
 import com.aerotrax.service.CompanyService
 import io.swagger.annotations.ApiOperation
-import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -17,10 +16,6 @@ private const val CONTROLLER_NAME = "/company"
 @CrossOrigin(origins = ["*"])
 @RequestMapping(CONTROLLER_NAME) /** The paths for HTTP requests are relative to this base path. **/
 class CompanyController (private val companyService: CompanyService) {
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(RestController::class.java)
-    }
 
     /*************************************/
     /*****     Company Login      *******/
