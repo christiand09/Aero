@@ -44,44 +44,28 @@ class AuthImpl (private val rpc: NodeRPCConnection,
 
             when {
                 name.equals("aerotraxlocal", true) -> {
-                    if (myIdentity.equals(LOCAL_NODE_AEROTRAX, true))
-                    state = aerotraxInfo("aerotraxlocal")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == LOCAL_NODE_AEROTRAX) state = aerotraxInfo("aerotraxlocal") else throw IllegalArgumentException("Incorrect Node")
                 }
                 name.equals("airline1local", true) -> {
-                    if (myIdentity.equals(LOCAL_NODE_AIRLINE1, true))
-                        state = americanAirlineInfo("airline1local")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == LOCAL_NODE_AIRLINE1) state = americanAirlineInfo("airline1local") else throw IllegalArgumentException("Incorrect Node")
                 }
                 name.equals("mrolocal", true) -> {
-                    if (myIdentity.equals(LOCAL_NODE_MRO, true))
-                        state = mroInfo("mrolocal")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == LOCAL_NODE_MRO) state = mroInfo("mrolocal") else throw IllegalArgumentException("Incorrect Node")
                 }
                 name.equals("oemlocal", true) -> {
-                    if (myIdentity.equals(LOCAL_NODE_OEM, true))
-                        state = oemInfo("oemlocal")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == LOCAL_NODE_OEM) state = oemInfo("oemlocal") else throw IllegalArgumentException("Incorrect Node")
                 }
                 name.equals("aerotrax", true) -> {
-                    if (myIdentity.equals(SERVER_NODE_AEROTRAX, true))
-                        state = aerotraxInfo("aerotrax")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == SERVER_NODE_AEROTRAX) state = aerotraxInfo("aerotrax") else throw IllegalArgumentException("Incorrect Node")
                 }
                 name.equals("airline1", true) -> {
-                    if (myIdentity.equals(SERVER_NODE_AIRLINE1, true))
-                        state = americanAirlineInfo("airline1")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == SERVER_NODE_AIRLINE1) state = americanAirlineInfo("airline1") else throw IllegalArgumentException("Incorrect Node")
                 }
                 name.equals("mro", true) -> {
-                    if (myIdentity.equals(SERVER_NODE_MRO, true))
-                        state = mroInfo("mro")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == SERVER_NODE_MRO) state = mroInfo("mro") else throw IllegalArgumentException("Incorrect Node")
                 }
                 name.equals("oem", true) -> {
-                    if (myIdentity.equals(SERVER_NODE_OEM, true))
-                        state = oemInfo("oem")
-                    else throw IllegalArgumentException("Incorrect Node")
+                    if (myIdentity == SERVER_NODE_OEM) state = oemInfo("oem") else throw IllegalArgumentException("Incorrect Node")
                 }
                 else -> {
                     throw IllegalArgumentException("Incorrect name: $name")
